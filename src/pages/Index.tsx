@@ -1,13 +1,34 @@
-// Update this page (the content is just a fallback if you fail to update the page)
 
+import React from 'react';
+import { AppProvider } from '@/contexts/AppContext';
+import { useApp } from '@/contexts/AppContext';
+import FileUploadPage from '@/components/FileUploadPage';
+import UserInfoPage from '@/components/UserInfoPage';
+import AnalysisPage from '@/components/AnalysisPage';
+
+// AppContent component to use the context
+const AppContent = () => {
+  const { state } = useApp();
+  
+  // Render different pages based on the current step
+  switch (state.currentStep) {
+    case 'upload':
+      return <FileUploadPage />;
+    case 'info':
+      return <UserInfoPage />;
+    case 'analysis':
+      return <AnalysisPage />;
+    default:
+      return <FileUploadPage />;
+  }
+};
+
+// Main index component with context provider
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
-      </div>
-    </div>
+    <AppProvider>
+      <AppContent />
+    </AppProvider>
   );
 };
 
