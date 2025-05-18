@@ -1,5 +1,5 @@
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { useApp } from '@/contexts/AppContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
@@ -9,12 +9,37 @@ const PatternTab: React.FC = () => {
   const { state } = useApp();
   const data = state.analysisData!;
   const { user, partner } = state.userInfo;
+
+  const [messageRatio, setMessageRatio] = useState<{ [key: string]: number }>({});
+  const [responseTime, setResponseTime] = useState<{ [key: string]: number }>({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    axios.get('http://localhost:9000/metrics')
+      .then(res => {
+        const data = res.data;
+        setMessageRatio(data.message_ratio);
+        setResponseTime(data.avg_reply_time);
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.error('📛 metrics fetch error:', err);
+        setIsLoading(false);
+      });
+  }, []);
+  
+  if (isLoading) {
+    return <div className="p-6 text-center">📊 데이터를 불러오는 중입니다...</div>;
+  }
   
   // Prepare message ratio data for pie chart
   const messageRatioData = [
-    { name: user.name, value: data.messageRatio.user },
-    { name: partner.name, value: data.messageRatio.partner }
+    { name: user.name, value: messageRatio[user.name] ?? 0 },
+    { name: partner.name, value: messageRatio[partner.name] ?? 0 }
   ];
+
+  const userTime = responseTime[user.name] ?? 0;
+  const partnerTime = responseTime[partner.name] ?? 0;
   
   const COLORS = ['#3B82F6', '#8B5CF6'];
   
@@ -98,21 +123,20 @@ const PatternTab: React.FC = () => {
             
             <div className="mt-6 pt-4 border-t">
               <h4 className="font-medium text-sm mb-2">응답 패턴 분석</h4>
-              {data.responseTime.user < data.responseTime.partner ? (
+              {userTime < partnerTime ? (
                 <p className="text-sm bg-blue-50 p-3 rounded">
-                  {user.name}님이 {partner.name}님보다 평균 {(data.responseTime.partner - data.responseTime.user).toFixed(1)}분 더 빠르게 응답하고 있습니다.
-                  이는 {user.name}님이 대화에 더 적극적으로 참여하고 있음을 나타냅니다.
+                  {user.name}님이 {partner.name}님보다 평균 {(partnerTime - userTime).toFixed(1)}분 더 빠르게 응답하고 있습니다.
                 </p>
-              ) : data.responseTime.user > data.responseTime.partner ? (
+              ) : userTime > partnerTime ? (
                 <p className="text-sm bg-purple-50 p-3 rounded">
-                  {partner.name}님이 {user.name}님보다 평균 {(data.responseTime.user - data.responseTime.partner).toFixed(1)}분 더 빠르게 응답하고 있습니다.
-                  이는 {partner.name}님이 대화에 더 적극적으로 참여하고 있음을 나타냅니다.
+                  {partner.name}님이 {user.name}님보다 평균 {(userTime - partnerTime).toFixed(1)}분 더 빠르게 응답하고 있습니다.
                 </p>
               ) : (
                 <p className="text-sm bg-green-50 p-3 rounded">
                   두 사람의 응답 시간이 유사하여 대화의 호흡이 잘 맞는 것으로 보입니다.
                 </p>
               )}
+
             </div>
           </CardContent>
         </Card>

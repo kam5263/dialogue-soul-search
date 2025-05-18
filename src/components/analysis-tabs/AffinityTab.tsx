@@ -1,5 +1,6 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { useApp } from '@/contexts/AppContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -10,9 +11,28 @@ const AffinityTab: React.FC = () => {
   const { state } = useApp();
   const data = state.analysisData!;
   const { user, partner } = state.userInfo;
+  const [mildangIndex, setMildangIndex] = useState<{ [key: string]: number}>({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    axios.get('http://localhost:9000/metrics')
+      .then(res => {
+        const data = res.data;
+        setMildangIndex(data.mildang_index);
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.error('📛 metrics fetch error:', err);
+        setIsLoading(false);
+      });
+  }, []);
+  
+  if (isLoading) {
+    return <div className="p-6 text-center">📊 데이터를 불러오는 중입니다...</div>;
+  }
   
   // Calculate push-pull percentage for display
-  const userPushPullPercentage = data.pushPullIndex.user;
+  const userPushPullPercentage = mildangIndex[user.name]
 
   return (
     <div className="p-6">
@@ -100,14 +120,9 @@ const AffinityTab: React.FC = () => {
               {/* User side (left) */}
               <div className="flex items-center absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2">
                 <div className="relative flex flex-col items-center">
-                  <Avatar className="h-12 w-12 bg-blue-100 border-2 border-blue-400">
-                    {user.gender === 'male' ? (
-                      <User className="h-6 w-6 text-blue-600" />
-                    ) : user.gender === 'female' ? (
-                      <UserRound className="h-6 w-6 text-blue-600" />
-                    ) : (
-                      <UserRound className="h-6 w-6 text-blue-600" />
-                    )}
+                  <Avatar className="h-12 w-12 border-2 border-blue-400">
+                    <AvatarImage src="/user.png" alt={`${user.name} 아바타`} />
+                    <AvatarFallback>{user.name[0]}</AvatarFallback>
                   </Avatar>
                   <span className="text-xs font-medium mt-1 text-blue-600">{user.name}</span>
                   <ArrowRight className="h-6 w-6 mt-1 text-blue-600" />
@@ -118,14 +133,9 @@ const AffinityTab: React.FC = () => {
               <div className="flex items-center absolute right-0 top-1/2 -translate-y-1/2 translate-x-2">
                 <div className="relative flex flex-col items-center">
                   <ArrowLeft className="h-6 w-6 mb-1 text-purple-600" />
-                  <Avatar className="h-12 w-12 bg-purple-100 border-2 border-purple-400">
-                    {partner.gender === 'male' ? (
-                      <User className="h-6 w-6 text-purple-600" />
-                    ) : partner.gender === 'female' ? (
-                      <UserRound className="h-6 w-6 text-purple-600" />
-                    ) : (
-                      <UserRound className="h-6 w-6 text-purple-600" />
-                    )}
+                  <Avatar className="h-12 w-12 border-2 border-purple-400">
+                    <AvatarImage src="/partner.png" alt={`${partner.name} 아바타`} />
+                    <AvatarFallback>{partner.name[0]}</AvatarFallback>
                   </Avatar>
                   <span className="text-xs font-medium mt-1 text-purple-600">{partner.name}</span>
                 </div>
