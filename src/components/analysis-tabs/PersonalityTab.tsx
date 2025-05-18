@@ -1,12 +1,27 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 const PersonalityTab: React.FC = () => {
   const { state } = useApp();
   const data = state.analysisData!;
   const { user, partner } = state.userInfo;
+
+  // Track selected emotions for the graph
+  const [selectedEmotions, setSelectedEmotions] = useState<string[]>(["happiness", "sadness"]);
+
+  // Toggle emotion selection for graph
+  const toggleEmotion = (emotion: string) => {
+    if (selectedEmotions.includes(emotion)) {
+      setSelectedEmotions(selectedEmotions.filter(e => e !== emotion));
+    } else {
+      setSelectedEmotions([...selectedEmotions, emotion]);
+    }
+  };
 
   // Prepare radar chart data (emotion scores)
   const emotionRadarData = Object.keys(data.emotionScores.user).map(key => ({
@@ -39,13 +54,6 @@ const PersonalityTab: React.FC = () => {
     return dataPoint;
   });
 
-  // Translating tone variables to Korean
-  const toneLabels = {
-    formal: '격식체',
-    casual: '구어체',
-    emotional: '감정적'
-  };
-
   // Function to get MBTI comparison text
   const getMbtiComparisonText = (person: 'user' | 'partner') => {
     const personData = person === 'user' ? user : partner;
@@ -66,6 +74,42 @@ const PersonalityTab: React.FC = () => {
     surprise: '#F59E0B', // amber
     disgust: '#7C3AED',  // violet
     neutral: '#3B82F6',  // blue
+  };
+
+  // Speech style traits for each person
+  const speechTraits = {
+    user: [
+      { trait: '친근함', level: 78 },
+      { trait: '유머러스', level: 62 },
+      { trait: '솔직함', level: 85 },
+      { trait: '공감적', level: 70 },
+      { trait: '논리적', level: 68 },
+    ],
+    partner: [
+      { trait: '친근함', level: 65 },
+      { trait: '유머러스', level: 72 },
+      { trait: '솔직함', level: 70 },
+      { trait: '공감적', level: 82 },
+      { trait: '논리적', level: 75 },
+    ]
+  };
+
+  // Map of emotion keys to Korean labels
+  const emotionLabels = {
+    happiness: '행복',
+    sadness: '슬픔',
+    anger: '분노',
+    fear: '두려움',
+    surprise: '놀람',
+    disgust: '혐오',
+    neutral: '중립'
+  };
+
+  // Function to determine badge size based on trait level
+  const getTraitBadgeSize = (level: number) => {
+    if (level >= 80) return 'lg';
+    if (level >= 60) return 'md';
+    return 'sm';
   };
 
   return (
@@ -94,36 +138,48 @@ const PersonalityTab: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* Tone Analysis Card */}
+        {/* Speech Style Analysis Card - New format with badges */}
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">말투 분석</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {Object.entries(toneLabels).map(([key, label]) => (
-                <div key={key} className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>{label}</span>
-                    <span className="text-gray-500">
-                      {user.name}: {data.toneAnalysis.user[key as keyof typeof data.toneAnalysis.user]}% / 
-                      {partner.name}: {data.toneAnalysis.partner[key as keyof typeof data.toneAnalysis.partner]}%
-                    </span>
-                  </div>
-                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <div 
-                      className="bg-blue-500 h-full rounded-full"
-                      style={{ width: `${data.toneAnalysis.user[key as keyof typeof data.toneAnalysis.user]}%` }}
-                    ></div>
-                  </div>
-                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <div 
-                      className="bg-purple-500 h-full rounded-full"
-                      style={{ width: `${data.toneAnalysis.partner[key as keyof typeof data.toneAnalysis.partner]}%` }}
-                    ></div>
-                  </div>
+            <div className="grid grid-cols-1 gap-6">
+              <div className="space-y-4">
+                <h3 className="font-medium text-blue-700">{user.name}</h3>
+                <div className="flex flex-wrap gap-2">
+                  {speechTraits.user.map(trait => (
+                    <Badge 
+                      key={trait.trait}
+                      className={`px-3 py-1.5 ${
+                        trait.level >= 80 ? 'bg-blue-500 text-white' :
+                        trait.level >= 60 ? 'bg-blue-200 text-blue-800' : 
+                        'bg-blue-100 text-blue-600'
+                      } text-${getTraitBadgeSize(trait.level)}`}
+                    >
+                      {trait.trait}
+                    </Badge>
+                  ))}
                 </div>
-              ))}
+              </div>
+              
+              <div className="space-y-4">
+                <h3 className="font-medium text-purple-700">{partner.name}</h3>
+                <div className="flex flex-wrap gap-2">
+                  {speechTraits.partner.map(trait => (
+                    <Badge 
+                      key={trait.trait}
+                      className={`px-3 py-1.5 ${
+                        trait.level >= 80 ? 'bg-purple-500 text-white' :
+                        trait.level >= 60 ? 'bg-purple-200 text-purple-800' : 
+                        'bg-purple-100 text-purple-600'
+                      } text-${getTraitBadgeSize(trait.level)}`}
+                    >
+                      {trait.trait}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -161,12 +217,35 @@ const PersonalityTab: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Emotion Timeline */}
+      {/* Emotion Timeline with Selectable Emotions */}
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">감정 변화 추이</CardTitle>
         </CardHeader>
         <CardContent>
+          <div className="mb-4">
+            <p className="text-sm text-gray-500 mb-2">감정을 선택하여 변화 추이를 확인하세요 (다중 선택 가능)</p>
+            <div className="flex flex-wrap gap-2 mb-4">
+              {Object.entries(emotionLabels).map(([emotion, label]) => (
+                <Button 
+                  key={emotion}
+                  variant={selectedEmotions.includes(emotion) ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => toggleEmotion(emotion)}
+                  style={{ 
+                    backgroundColor: selectedEmotions.includes(emotion) 
+                      ? emotionColors[emotion as keyof typeof emotionColors] 
+                      : 'transparent',
+                    borderColor: emotionColors[emotion as keyof typeof emotionColors],
+                    color: selectedEmotions.includes(emotion) ? 'white' : emotionColors[emotion as keyof typeof emotionColors]
+                  }}
+                >
+                  {label}
+                </Button>
+              ))}
+            </div>
+          </div>
+          
           <div className="h-96">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
@@ -178,34 +257,25 @@ const PersonalityTab: React.FC = () => {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                {/* Only show happiness and sadness by default to keep it clean */}
-                <Line 
-                  type="monotone" 
-                  dataKey={`${user.name}-happiness`} 
-                  name={`${user.name} (행복)`}
-                  stroke={emotionColors.happiness} 
-                  activeDot={{ r: 8 }} 
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey={`${partner.name}-happiness`} 
-                  name={`${partner.name} (행복)`}
-                  stroke={emotionColors.happiness} 
-                  strokeDasharray="5 5" 
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey={`${user.name}-sadness`} 
-                  name={`${user.name} (슬픔)`}
-                  stroke={emotionColors.sadness} 
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey={`${partner.name}-sadness`} 
-                  name={`${partner.name} (슬픔)`}
-                  stroke={emotionColors.sadness} 
-                  strokeDasharray="5 5" 
-                />
+                {/* Only show selected emotions */}
+                {selectedEmotions.map(emotion => (
+                  <React.Fragment key={emotion}>
+                    <Line 
+                      type="monotone" 
+                      dataKey={`${user.name}-${emotion}`} 
+                      name={`${user.name} (${emotionLabels[emotion as keyof typeof emotionLabels]})`}
+                      stroke={emotionColors[emotion as keyof typeof emotionColors]} 
+                      activeDot={{ r: 8 }} 
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey={`${partner.name}-${emotion}`} 
+                      name={`${partner.name} (${emotionLabels[emotion as keyof typeof emotionLabels]})`}
+                      stroke={emotionColors[emotion as keyof typeof emotionColors]} 
+                      strokeDasharray="5 5" 
+                    />
+                  </React.Fragment>
+                ))}
               </LineChart>
             </ResponsiveContainer>
           </div>

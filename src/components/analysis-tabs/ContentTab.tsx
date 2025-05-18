@@ -5,33 +5,69 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
-// Simple word cloud component (since we don't have a full word cloud library)
-const SimpleWordCloud = ({ words }: { words: { word: string; count: number }[] }) => {
+// Word cloud component with better visualization
+const WordCloud = ({ words }: { words: { word: string; count: number }[] }) => {
   // Sort words by count
   const sortedWords = [...words].sort((a, b) => b.count - a.count);
+  const maxCount = sortedWords[0]?.count || 1;
   
-  // Function to determine font size based on count
+  // Calculate font size and position words in a more natural cloud layout
+  const getRandomPosition = () => {
+    return {
+      x: Math.floor(Math.random() * 70) + 15, // 15-85% of container width
+      y: Math.floor(Math.random() * 70) + 15, // 15-85% of container height
+      rotate: Math.floor(Math.random() * 60) - 30, // -30 to 30 degrees
+    };
+  };
+  
+  // Random colors for words
+  const colors = [
+    '#3B82F6', // blue
+    '#8B5CF6', // purple
+    '#EC4899', // pink
+    '#F59E0B', // amber
+    '#10B981', // green
+    '#6366F1', // indigo
+    '#EF4444', // red
+  ];
+  
+  const getRandomColor = () => {
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
+  
   const getFontSize = (count: number) => {
-    const max = sortedWords[0]?.count || 1;
-    const min = sortedWords[sortedWords.length - 1]?.count || 1;
-    const ratio = (count - min) / (max - min || 1);
-    return 12 + ratio * 20; // font sizes between 12px and 32px
+    const minSize = 12;
+    const maxSize = 40;
+    // Calculate size based on word frequency
+    return minSize + ((count / maxCount) * (maxSize - minSize));
   };
 
   return (
-    <div className="flex flex-wrap justify-center gap-2 p-4">
-      {sortedWords.map((item) => (
-        <span
-          key={item.word}
-          className="inline-block px-2 py-1 rounded"
-          style={{
-            fontSize: `${getFontSize(item.count)}px`,
-            opacity: 0.6 + (item.count / sortedWords[0].count) * 0.4,
-          }}
-        >
-          {item.word}
-        </span>
-      ))}
+    <div className="relative h-64 w-full bg-gray-50 rounded-lg p-2 overflow-hidden">
+      {sortedWords.map((item, index) => {
+        const { x, y, rotate } = getRandomPosition();
+        const fontSize = getFontSize(item.count);
+        
+        return (
+          <div
+            key={`${item.word}-${index}`}
+            className="absolute transform -translate-x-1/2 -translate-y-1/2"
+            style={{
+              left: `${x}%`,
+              top: `${y}%`,
+              fontSize: `${fontSize}px`,
+              fontWeight: fontSize > 20 ? 'bold' : 'normal',
+              color: getRandomColor(),
+              transform: `rotate(${rotate}deg)`,
+              opacity: 0.7 + (item.count / maxCount) * 0.3,
+              transition: 'all 0.3s ease',
+              zIndex: Math.floor(fontSize),
+            }}
+          >
+            {item.word}
+          </div>
+        );
+      })}
     </div>
   );
 };
@@ -60,7 +96,7 @@ const ContentTab: React.FC = () => {
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-6">대화 내용 분석</h2>
       
-      {/* Word Frequency */}
+      {/* Word Frequency with Word Cloud */}
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="text-lg">자주 사용한 단어</CardTitle>
@@ -72,12 +108,12 @@ const ContentTab: React.FC = () => {
               <TabsTrigger value="partner">{partner.name}</TabsTrigger>
             </TabsList>
             
-            <TabsContent value="user" className="h-48">
-              <SimpleWordCloud words={data.wordFrequency.user} />
+            <TabsContent value="user">
+              <WordCloud words={data.wordFrequency.user} />
             </TabsContent>
             
-            <TabsContent value="partner" className="h-48">
-              <SimpleWordCloud words={data.wordFrequency.partner} />
+            <TabsContent value="partner">
+              <WordCloud words={data.wordFrequency.partner} />
             </TabsContent>
           </Tabs>
           

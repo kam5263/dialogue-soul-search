@@ -3,21 +3,16 @@ import React from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { Avatar } from '@/components/ui/avatar';
+import { User, UserRound } from 'lucide-react';
 
 const AffinityTab: React.FC = () => {
   const { state } = useApp();
   const data = state.analysisData!;
   const { user, partner } = state.userInfo;
   
-  // Prepare push-pull index data
-  const pushPullData = [
-    {
-      name: '밀당 지수',
-      [user.name]: data.pushPullIndex.user,
-      [partner.name]: data.pushPullIndex.partner,
-    }
-  ];
+  // Calculate push-pull percentage for display
+  const userPushPullPercentage = data.pushPullIndex.user;
 
   return (
     <div className="p-6">
@@ -88,34 +83,68 @@ const AffinityTab: React.FC = () => {
         </Card>
       </div>
       
-      {/* Push-Pull Index (Tug of War) */}
+      {/* Push-Pull Index (Single Line with Icons) */}
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="text-lg">밀당 지수</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="mb-4">
-            <p className="text-sm text-gray-500 mb-4">
+            <p className="text-sm text-gray-500 mb-6">
               밀당 지수는 대화에서 주도권과 적극성을 나타냅니다. 
               높은 값은 대화를 주도하고 먼저 시작하는 경향을, 낮은 값은 반응하는 경향을 의미합니다.
             </p>
             
-            <div className="h-24 mt-6">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={pushPullData}
-                  layout="vertical"
-                  margin={{ top: 5, right: 30, left: 30, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" domain={[0, 100]} />
-                  <YAxis dataKey="name" type="category" width={80} />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey={user.name} fill="#3B82F6" />
-                  <Bar dataKey={partner.name} fill="#8B5CF6" />
-                </BarChart>
-              </ResponsiveContainer>
+            <div className="flex items-center justify-between mb-1">
+              {/* User avatar */}
+              <div className="flex flex-col items-center">
+                <Avatar className="h-12 w-12 bg-blue-100 border-2 border-blue-400">
+                  {user.gender === 'male' ? (
+                    <User className="h-6 w-6 text-blue-600" />
+                  ) : user.gender === 'female' ? (
+                    <UserRound className="h-6 w-6 text-blue-600" />
+                  ) : (
+                    <UserRound className="h-6 w-6 text-blue-600" />
+                  )}
+                </Avatar>
+                <span className="text-xs font-medium mt-1 text-blue-600">{user.name}</span>
+              </div>
+              
+              {/* Partner avatar */}
+              <div className="flex flex-col items-center">
+                <Avatar className="h-12 w-12 bg-purple-100 border-2 border-purple-400">
+                  {partner.gender === 'male' ? (
+                    <User className="h-6 w-6 text-purple-600" />
+                  ) : partner.gender === 'female' ? (
+                    <UserRound className="h-6 w-6 text-purple-600" />
+                  ) : (
+                    <UserRound className="h-6 w-6 text-purple-600" />
+                  )}
+                </Avatar>
+                <span className="text-xs font-medium mt-1 text-purple-600">{partner.name}</span>
+              </div>
+            </div>
+            
+            {/* Single progress bar for push-pull index */}
+            <div className="relative mb-2 mt-4">
+              <div className="h-6 bg-gray-200 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-blue-500 rounded-full transition-all duration-500"
+                  style={{ width: `${userPushPullPercentage}%` }}
+                />
+              </div>
+              
+              {/* Overlay element to create dual color effect */}
+              <div 
+                className="absolute top-0 right-0 h-full bg-purple-500 rounded-full transition-all duration-500"
+                style={{ width: `${100 - userPushPullPercentage}%` }}
+              />
+              
+              {/* Percentage labels */}
+              <div className="flex justify-between text-xs mt-1">
+                <span>{userPushPullPercentage}%</span>
+                <span>{100 - userPushPullPercentage}%</span>
+              </div>
             </div>
             
             <div className="flex justify-between text-sm text-gray-500 mt-2">

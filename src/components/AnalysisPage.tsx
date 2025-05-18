@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useApp } from '@/contexts/AppContext';
-import { ArrowLeft, Brain, Heart, MessageSquare, BarChart2, CheckSquare } from 'lucide-react';
+import { ArrowLeft, Brain, Heart, MessageSquare, BarChart2, CheckSquare, Lightbulb } from 'lucide-react';
 import PersonalityTab from './analysis-tabs/PersonalityTab';
 import AffinityTab from './analysis-tabs/AffinityTab';
 import PatternTab from './analysis-tabs/PatternTab';
@@ -71,7 +71,7 @@ const AnalysisPage: React.FC = () => {
                 <BarChart2 className="h-4 w-4" /> <span className="hidden md:inline">대화 내용</span><span className="md:hidden">내용</span>
               </TabsTrigger>
               <TabsTrigger value="summary" className="flex items-center gap-2">
-                <CheckSquare className="h-4 w-4" /> <span className="hidden md:inline">요약 및 추천</span><span className="md:hidden">요약</span>
+                <Lightbulb className="h-4 w-4" /> <span className="hidden md:inline">요약 및 추천</span><span className="md:hidden">요약</span>
               </TabsTrigger>
             </TabsList>
           </div>
