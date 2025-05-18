@@ -1,7 +1,9 @@
 ﻿import React, { useState } from 'react';
-import { Upload } from 'lucide-react'; // 아이콘 사용
+import { Upload } from 'lucide-react';
+import UploadPage from './pages/UploadPage'; // 사용자 정보 입력 페이지
 
 const App = () => {
+    const [step, setStep] = useState(1);
     const [file, setFile] = useState<File | null>(null);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -11,10 +13,19 @@ const App = () => {
     };
 
     const handleNext = () => {
-        if (!file) return alert('파일을 업로드해주세요.');
-        alert(`파일 업로드 완료: ${file.name}`);
+        if (!file) {
+            alert('파일을 업로드해주세요.');
+            return;
+        }
+        setStep(2); // 다음 페이지로 이동
     };
 
+    // STEP 2: 사용자 정보 입력 페이지
+    if (step === 2) {
+        return <UploadPage uploadedFile={file} />;
+    }
+
+    // STEP 1: 파일 업로드 페이지
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#FFF7F5] font-sans">
             <div className="bg-white p-10 rounded-2xl shadow-xl w-96 text-center">

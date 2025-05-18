@@ -21,6 +21,7 @@ const config: Config = {
         extend: {
             fontFamily: {
                 sans: ['"Noto Sans KR"', '"Nanum Gothic"', 'sans-serif'],
+                noto: ['"Noto Sans KR"', 'sans-serif'],
             },
             boxShadow: {
                 card: '0 4px 20px rgba(0,0,0,0.08)', // ✅ shadow-card 유틸리티용
