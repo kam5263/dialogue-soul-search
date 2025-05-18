@@ -90,7 +90,7 @@ const UserInfoPage: React.FC = () => {
                         <SelectValue placeholder="선택" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">선택 안함</SelectItem>
+                        <SelectItem value="none">선택 안함</SelectItem>
                         {mbtiOptions.map((option) => (
                           <SelectItem key={option} value={option}>{option}</SelectItem>
                         ))}
@@ -108,7 +108,7 @@ const UserInfoPage: React.FC = () => {
                         <SelectValue placeholder="선택" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">선택 안함</SelectItem>
+                        <SelectItem value="none">선택 안함</SelectItem>
                         <SelectItem value="male">남성</SelectItem>
                         <SelectItem value="female">여성</SelectItem>
                       </SelectContent>
@@ -145,7 +145,7 @@ const UserInfoPage: React.FC = () => {
                         <SelectValue placeholder="선택" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">선택 안함</SelectItem>
+                        <SelectItem value="none">선택 안함</SelectItem>
                         {mbtiOptions.map((option) => (
                           <SelectItem key={option} value={option}>{option}</SelectItem>
                         ))}
@@ -163,7 +163,7 @@ const UserInfoPage: React.FC = () => {
                         <SelectValue placeholder="선택" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">선택 안함</SelectItem>
+                        <SelectItem value="none">선택 안함</SelectItem>
                         <SelectItem value="male">남성</SelectItem>
                         <SelectItem value="female">여성</SelectItem>
                       </SelectContent>
