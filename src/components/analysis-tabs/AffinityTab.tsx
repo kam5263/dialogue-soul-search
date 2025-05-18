@@ -3,8 +3,8 @@ import React from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { Avatar } from '@/components/ui/avatar';
-import { User, UserRound } from 'lucide-react';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { User, UserRound, ArrowLeft, ArrowRight } from 'lucide-react';
 
 const AffinityTab: React.FC = () => {
   const { state } = useApp();
@@ -83,7 +83,7 @@ const AffinityTab: React.FC = () => {
         </Card>
       </div>
       
-      {/* Push-Pull Index (Single Line with Icons) */}
+      {/* Push-Pull Index (Tug of War Style) */}
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="text-lg">밀당 지수</CardTitle>
@@ -95,61 +95,75 @@ const AffinityTab: React.FC = () => {
               높은 값은 대화를 주도하고 먼저 시작하는 경향을, 낮은 값은 반응하는 경향을 의미합니다.
             </p>
             
-            <div className="flex items-center justify-between mb-1">
-              {/* User avatar */}
-              <div className="flex flex-col items-center">
-                <Avatar className="h-12 w-12 bg-blue-100 border-2 border-blue-400">
-                  {user.gender === 'male' ? (
-                    <User className="h-6 w-6 text-blue-600" />
-                  ) : user.gender === 'female' ? (
-                    <UserRound className="h-6 w-6 text-blue-600" />
-                  ) : (
-                    <UserRound className="h-6 w-6 text-blue-600" />
-                  )}
-                </Avatar>
-                <span className="text-xs font-medium mt-1 text-blue-600">{user.name}</span>
+            {/* Tug of war visualization with avatars on the sides */}
+            <div className="relative my-8">
+              {/* User side (left) */}
+              <div className="flex items-center absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2">
+                <div className="relative flex flex-col items-center">
+                  <Avatar className="h-12 w-12 bg-blue-100 border-2 border-blue-400">
+                    {user.gender === 'male' ? (
+                      <User className="h-6 w-6 text-blue-600" />
+                    ) : user.gender === 'female' ? (
+                      <UserRound className="h-6 w-6 text-blue-600" />
+                    ) : (
+                      <UserRound className="h-6 w-6 text-blue-600" />
+                    )}
+                  </Avatar>
+                  <span className="text-xs font-medium mt-1 text-blue-600">{user.name}</span>
+                  <ArrowRight className="h-6 w-6 mt-1 text-blue-600" />
+                </div>
               </div>
               
-              {/* Partner avatar */}
-              <div className="flex flex-col items-center">
-                <Avatar className="h-12 w-12 bg-purple-100 border-2 border-purple-400">
-                  {partner.gender === 'male' ? (
-                    <User className="h-6 w-6 text-purple-600" />
-                  ) : partner.gender === 'female' ? (
-                    <UserRound className="h-6 w-6 text-purple-600" />
-                  ) : (
-                    <UserRound className="h-6 w-6 text-purple-600" />
-                  )}
-                </Avatar>
-                <span className="text-xs font-medium mt-1 text-purple-600">{partner.name}</span>
-              </div>
-            </div>
-            
-            {/* Single progress bar for push-pull index */}
-            <div className="relative mb-2 mt-4">
-              <div className="h-6 bg-gray-200 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-blue-500 rounded-full transition-all duration-500"
-                  style={{ width: `${userPushPullPercentage}%` }}
-                />
+              {/* Partner side (right) */}
+              <div className="flex items-center absolute right-0 top-1/2 -translate-y-1/2 translate-x-2">
+                <div className="relative flex flex-col items-center">
+                  <ArrowLeft className="h-6 w-6 mb-1 text-purple-600" />
+                  <Avatar className="h-12 w-12 bg-purple-100 border-2 border-purple-400">
+                    {partner.gender === 'male' ? (
+                      <User className="h-6 w-6 text-purple-600" />
+                    ) : partner.gender === 'female' ? (
+                      <UserRound className="h-6 w-6 text-purple-600" />
+                    ) : (
+                      <UserRound className="h-6 w-6 text-purple-600" />
+                    )}
+                  </Avatar>
+                  <span className="text-xs font-medium mt-1 text-purple-600">{partner.name}</span>
+                </div>
               </div>
               
-              {/* Overlay element to create dual color effect */}
-              <div 
-                className="absolute top-0 right-0 h-full bg-purple-500 rounded-full transition-all duration-500"
-                style={{ width: `${100 - userPushPullPercentage}%` }}
-              />
-              
-              {/* Percentage labels */}
-              <div className="flex justify-between text-xs mt-1">
-                <span>{userPushPullPercentage}%</span>
-                <span>{100 - userPushPullPercentage}%</span>
+              {/* The rope (progress bar) */}
+              <div className="mx-16 mb-2"> {/* Add margin to make space for avatars */}
+                <div className="relative h-6">
+                  {/* Base track */}
+                  <div className="h-6 w-full bg-gray-200 rounded-full">
+                    {/* User's pull */}
+                    <div 
+                      className="absolute left-0 h-full bg-blue-500 rounded-l-full transition-all duration-500"
+                      style={{ width: `${userPushPullPercentage}%` }}
+                    >
+                      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-gray-700 rounded-full border-2 border-white"></div>
+                    </div>
+                    
+                    {/* Partner's pull */}
+                    <div 
+                      className="absolute right-0 h-full bg-purple-500 rounded-r-full transition-all duration-500"
+                      style={{ width: `${100 - userPushPullPercentage}%` }}
+                    >
+                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-gray-700 rounded-full border-2 border-white"></div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex justify-between text-xs mt-2">
+                  <span className="pl-1">{userPushPullPercentage}%</span>
+                  <span className="pr-1">{100 - userPushPullPercentage}%</span>
+                </div>
               </div>
-            </div>
-            
-            <div className="flex justify-between text-sm text-gray-500 mt-2">
-              <span>수동적/반응형</span>
-              <span>적극적/주도형</span>
+              
+              <div className="flex justify-between text-sm text-gray-500 mx-16 mt-2 mb-4">
+                <span>수동적/반응형</span>
+                <span>적극적/주도형</span>
+              </div>
             </div>
             
             <div className="mt-8">
