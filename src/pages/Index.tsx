@@ -5,7 +5,15 @@ import { useApp } from '@/contexts/AppContext';
 import FileUploadPage from '@/components/FileUploadPage';
 import UserInfoPage from '@/components/UserInfoPage';
 import AnalysisPage from '@/components/AnalysisPage';
+// 🧠 헤더 컴포넌트 추가
+const Header = () => {
+  return (
+<header className="p-2 text-sm text-gray-500 bg-gray-50 border-b border-gray-200">
+  ❤️ Heart Insight
+</header>
 
+  );
+};
 // AppContent component to use the context
 const AppContent = () => {
   const { state } = useApp();
@@ -27,6 +35,7 @@ const AppContent = () => {
 const Index = () => {
   return (
     <AppProvider>
+      <Header />
       <AppContent />
     </AppProvider>
   );

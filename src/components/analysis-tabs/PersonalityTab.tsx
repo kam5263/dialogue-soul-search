@@ -1,18 +1,27 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { fetchEmotionAnalysis } from '@/api/analysis'; // 위에서 만든 API 함수
+import dayjs from 'dayjs';
 
 const PersonalityTab: React.FC = () => {
   const { state } = useApp();
   const data = state.analysisData!;
   const { user, partner } = state.userInfo;
 
+  const [emotionData, setEmotionData] = useState<any | null>(null);
+  const [loading, setLoading] = useState(true);
+
   // Track selected emotions for the graph
   const [selectedEmotions, setSelectedEmotions] = useState<string[]>(["happiness", "sadness"]);
+
+  const [emotionTimelineData, setEmotionTimelineData] = useState<any[]>([]);
+  const [emotionLabels, setEmotionLabels] = useState<Record<string, string>>({});
+  const [uniqueEmotions, setUniqueEmotions] = useState<string[]>([]);
 
   // Toggle emotion selection for graph
   const toggleEmotion = (emotion: string) => {
@@ -23,36 +32,94 @@ const PersonalityTab: React.FC = () => {
     }
   };
 
-  // Prepare radar chart data (emotion scores)
-  const emotionRadarData = Object.keys(data.emotionScores.user).map(key => ({
-    emotion: key === 'happiness' ? '행복' :
-             key === 'sadness' ? '슬픔' :
-             key === 'anger' ? '분노' :
-             key === 'fear' ? '두려움' :
-             key === 'surprise' ? '놀람' :
-             key === 'disgust' ? '혐오' : '중립',
-    [user.name]: data.emotionScores.user[key as keyof typeof data.emotionScores.user],
-    [partner.name]: data.emotionScores.partner[key as keyof typeof data.emotionScores.partner],
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const result = await fetchEmotionAnalysis('gpt_dead_love_sample_30.csv');
+        const messages = result.result.messages;
+        const dateEmotionMap: Record<string, Record<string, number[]>> = {};
+        messages.forEach((msg: any) => {
+          const date = dayjs(msg.timestamp).format('YYYY-MM-DD');
+          if (!dateEmotionMap[date]) dateEmotionMap[date] = {};
+          if (!dateEmotionMap[date][msg.sentiment]) dateEmotionMap[date][msg.sentiment] = [];
+
+          dateEmotionMap[date][msg.sentiment].push(msg.confidence);
+        });
+
+        // 평균값 계산 후 LineChart에 넣을 데이터 생성
+        const timeline = Object.entries(dateEmotionMap).map(([date, sentiments]) => {
+          const dataPoint: any = { name: date };
+
+          Object.entries(sentiments).forEach(([emotion, confidences]) => {
+            const avgConfidence = confidences.reduce((a, b) => a + b, 0) / confidences.length;
+            dataPoint[emotion] = parseFloat(avgConfidence.toFixed(3)); // 소수점 3자리로
+          });
+
+          return dataPoint;
+        });
+
+        // 메시지에서 감정 키 자동 추출
+        const emotions = Array.from(new Set(messages.map(msg => msg.sentiment))) as string[];
+
+        // 한글 감정명 그대로 라벨로 사용
+        const labels: Record<string, string> = {};
+        emotions.forEach(emotion => {
+          labels[emotion as string] = emotion as string; // 예: "즐거운(신나는)": "즐거운(신나는)"
+        });
+
+        setEmotionData(result.result);
+        setEmotionTimelineData(timeline);
+        setUniqueEmotions(emotions);
+        setEmotionLabels(labels);
+        setSelectedEmotions(emotions);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, []);
+
+  if (loading) {
+    return <div className="p-6 text-center text-gray-500">로딩 중...</div>;
+  }
+
+  if (!emotionData || emotionTimelineData.length === 0) {
+    return <div className="p-6 text-center text-red-500">데이터를 불러올 수 없습니다.</div>;
+  }
+  const emotionRadarData = Object.entries(emotionData.average_confidence).map(([key, value]) => ({
+    emotion: key,
+    [user.name]: value,
+    [partner.name]: Math.random() * 0.5 + 0.3, // 파트너 데이터가 없다면 예시값
   }));
 
+  // Colors for the emotion lines
+  const emotionColors = {
+    "즐거운(신나는)": '#10B981',
+    "설레는(기대하는)": '#F59E0B',
+    "일상적인": '#6B7280',
+    "기쁨(행복한)": '#3B82F6',
+  };
+
   // Prepare line chart data (emotion timeline)
-  const emotionTimelineData = data.emotionTimeline.timestamps.map((time, index) => {
-    const dataPoint: any = { name: time };
+  // const emotionTimelineData = data.emotionTimeline.timestamps.map((time, index) => {
+  //   const dataPoint: any = { name: time };
     
-    // Add user data
-    Object.keys(data.emotionTimeline.user).forEach(emotion => {
-      dataPoint[`${user.name}-${emotion}`] = 
-        data.emotionTimeline.user[emotion as keyof typeof data.emotionTimeline.user][index];
-    });
+  //   // Add user data
+  //   Object.keys(data.emotionTimeline.user).forEach(emotion => {
+  //     dataPoint[`${user.name}-${emotion}`] = 
+  //       data.emotionTimeline.user[emotion as keyof typeof data.emotionTimeline.user][index];
+  //   });
     
-    // Add partner data
-    Object.keys(data.emotionTimeline.partner).forEach(emotion => {
-      dataPoint[`${partner.name}-${emotion}`] = 
-        data.emotionTimeline.partner[emotion as keyof typeof data.emotionTimeline.partner][index];
-    });
+  //   // Add partner data
+  //   Object.keys(data.emotionTimeline.partner).forEach(emotion => {
+  //     dataPoint[`${partner.name}-${emotion}`] = 
+  //       data.emotionTimeline.partner[emotion as keyof typeof data.emotionTimeline.partner][index];
+  //   });
     
-    return dataPoint;
-  });
+  //   return dataPoint;
+  // });
 
   // Function to get MBTI comparison text
   const getMbtiComparisonText = (person: 'user' | 'partner') => {
@@ -65,17 +132,6 @@ const PersonalityTab: React.FC = () => {
     return '';
   };
   
-  // Colors for the emotion lines
-  const emotionColors = {
-    happiness: '#10B981', // green
-    sadness: '#6B7280',  // gray
-    anger: '#EF4444',    // red
-    fear: '#8B5CF6',     // purple
-    surprise: '#F59E0B', // amber
-    disgust: '#7C3AED',  // violet
-    neutral: '#3B82F6',  // blue
-  };
-
   // Speech style traits for each person
   const speechTraits = {
     user: [
@@ -92,17 +148,6 @@ const PersonalityTab: React.FC = () => {
       { trait: '공감적', level: 82 },
       { trait: '논리적', level: 75 },
     ]
-  };
-
-  // Map of emotion keys to Korean labels
-  const emotionLabels = {
-    happiness: '행복',
-    sadness: '슬픔',
-    anger: '분노',
-    fear: '두려움',
-    surprise: '놀람',
-    disgust: '혐오',
-    neutral: '중립'
   };
 
   // Function to determine badge size based on trait level
@@ -260,7 +305,7 @@ const PersonalityTab: React.FC = () => {
                 {/* Only show selected emotions */}
                 {selectedEmotions.map(emotion => (
                   <React.Fragment key={emotion}>
-                    <Line 
+                    {/* <Line 
                       type="monotone" 
                       dataKey={`${user.name}-${emotion}`} 
                       name={`${user.name} (${emotionLabels[emotion as keyof typeof emotionLabels]})`}
@@ -273,7 +318,18 @@ const PersonalityTab: React.FC = () => {
                       name={`${partner.name} (${emotionLabels[emotion as keyof typeof emotionLabels]})`}
                       stroke={emotionColors[emotion as keyof typeof emotionColors]} 
                       strokeDasharray="5 5" 
-                    />
+                    /> */}
+                    {selectedEmotions.map(emotion => (
+                      <Line 
+                        key={emotion}
+                        type="monotone"
+                        dataKey={emotion}
+                        name={emotionLabels[emotion as keyof typeof emotionLabels] || emotion}
+                        stroke={emotionColors[emotion as keyof typeof emotionColors] || '#3B82F6'}
+                        strokeWidth={2}
+                        activeDot={{ r: 6 }}
+                      />
+                    ))}
                   </React.Fragment>
                 ))}
               </LineChart>
