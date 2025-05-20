@@ -41,6 +41,22 @@ const UploadPage: React.FC<Props> = ({ uploadedFile }) => {
                             <label className="block text-xs font-semibold mb-1">MBTI (선택)</label>
                             <select className="w-full px-3 py-2 rounded border text-sm bg-white text-black">
                                 <option>선택</option>
+                                <option>INTJ</option>
+                                <option>INTP</option>
+                                <option>ENTJ</option>
+                                <option>ENTP</option>
+                                <option>INFJ</option>
+                                <option>INFP</option>
+                                <option>ENFJ</option>
+                                <option>ENFP</option>
+                                <option>ISTJ</option>
+                                <option>ISFJ</option>
+                                <option>ESTJ</option>
+                                <option>ESFJ</option>
+                                <option>ISTP</option>
+                                <option>ISFP</option>
+                                <option>ESTP</option>
+                                <option>ESFP</option>
                             </select>
                         </div>
                         <div className="flex-1">
@@ -68,6 +84,22 @@ const UploadPage: React.FC<Props> = ({ uploadedFile }) => {
                             <label className="block text-xs font-semibold mb-1">MBTI (선택)</label>
                             <select className="w-full px-3 py-2 rounded border text-sm bg-white text-black">
                                 <option>선택</option>
+                                <option>INTJ</option>
+                                <option>INTP</option>
+                                <option>ENTJ</option>
+                                <option>ENTP</option>
+                                <option>INFJ</option>
+                                <option>INFP</option>
+                                <option>ENFJ</option>
+                                <option>ENFP</option>
+                                <option>ISTJ</option>
+                                <option>ISFJ</option>
+                                <option>ESTJ</option>
+                                <option>ESFJ</option>
+                                <option>ISTP</option>
+                                <option>ISFP</option>
+                                <option>ESTP</option>
+                                <option>ESFP</option>
                             </select>
                         </div>
                         <div className="flex-1">
