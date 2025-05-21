@@ -5,17 +5,29 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { fetchEmotionAnalysis } from '@/api/analysis'; // 위에서 만든 API 함수
+import { fetchEmotionAnalysis, fetchLLM } from '@/api/analysis'; // 위에서 만든 API 함수
+import { parseJsonData } from '@/utils/parser'
 import dayjs from 'dayjs';
+
+const allTraits = ['친근함', '유머러스', '솔직함', '공감적', '논리적'];
 
 const PersonalityTab: React.FC = () => {
   const { state } = useApp();
   const data = state.analysisData!;
   const { user, partner } = state.userInfo;
+  //MBTI
+  const [finalMbti, setFinalMbti] = useState('');
+  const [confidence, setConfidence] = useState('');
+  const [comment, setComment] = useState('');
+  //Tone
+  const [speechTraits, setSpeechTraits] = useState({
+    user: [],
+    partner: [],
+  });
 
   const [emotionData, setEmotionData] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
-
+  
   // Track selected emotions for the graph
   const [selectedEmotions, setSelectedEmotions] = useState<string[]>(["happiness", "sadness"]);
 
@@ -35,8 +47,10 @@ const PersonalityTab: React.FC = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const result = await fetchEmotionAnalysis('gpt_dead_love_sample_30.csv');
-        const messages = result.result.messages;
+        const nlpResult = await fetchEmotionAnalysis('gpt_dead_love_sample_30.csv');
+        const llmResult = await fetchLLM('kakao_sample');
+
+        const messages = nlpResult.result.messages;
         const dateEmotionMap: Record<string, Record<string, number[]>> = {};
         messages.forEach((msg: any) => {
           const date = dayjs(msg.timestamp).format('YYYY-MM-DD');
@@ -66,8 +80,27 @@ const PersonalityTab: React.FC = () => {
         emotions.forEach(emotion => {
           labels[emotion as string] = emotion as string; // 예: "즐거운(신나는)": "즐거운(신나는)"
         });
+        
+        //MBTI start//
+        const llmData = parseJsonData(llmResult.result);
+        const partnerMbtiDetail = llmData.mbti_prediction;
+        setFinalMbti(partnerMbtiDetail.type);
+        setConfidence(partnerMbtiDetail.confidence);
+        setComment(partnerMbtiDetail.mbti_commemts);
+        //MBTI end//
+        const { user, partener } = llmData.convalsational_tone;
+        const generateTraitList = (selectedTrait) =>
+          allTraits.map((trait) => ({
+            trait,
+            selected: trait === selectedTrait,
+        }));
 
-        setEmotionData(result.result);
+        setSpeechTraits({
+          user: generateTraitList(user),
+          partner: generateTraitList(partener),
+        });
+
+        setEmotionData(nlpResult.result);
         setEmotionTimelineData(timeline);
         setUniqueEmotions(emotions);
         setEmotionLabels(labels);
@@ -131,29 +164,10 @@ const PersonalityTab: React.FC = () => {
     }
     return '';
   };
-  
-  // Speech style traits for each person
-  const speechTraits = {
-    user: [
-      { trait: '친근함', level: 78 },
-      { trait: '유머러스', level: 62 },
-      { trait: '솔직함', level: 85 },
-      { trait: '공감적', level: 70 },
-      { trait: '논리적', level: 68 },
-    ],
-    partner: [
-      { trait: '친근함', level: 65 },
-      { trait: '유머러스', level: 72 },
-      { trait: '솔직함', level: 70 },
-      { trait: '공감적', level: 82 },
-      { trait: '논리적', level: 75 },
-    ]
-  };
 
   // Function to determine badge size based on trait level
-  const getTraitBadgeSize = (level: number) => {
-    if (level >= 80) return 'lg';
-    if (level >= 60) return 'md';
+  const getTraitBadgeSize = (selected: boolean) => {
+    if (selected) return 'lg';
     return 'sm';
   };
 
@@ -162,23 +176,29 @@ const PersonalityTab: React.FC = () => {
       <h2 className="text-2xl font-bold mb-6">성향 분석</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        {/* MBTI Card */}
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">MBTI 예측</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-blue-50 p-4 rounded-lg text-center">
-                <p className="text-sm text-gray-500 mb-1">{user.name}</p>
-                <div className="text-2xl font-bold text-blue-700">{data.predictedMbti.user}</div>
-                <p className="text-xs text-gray-500">{getMbtiComparisonText('user')}</p>
+            <div className="grid grid-cols-5 gap-4 items-center">
+              {/* 나의 MBTI */}
+              <div className="col-span-2 bg-blue-50 p-3 rounded-lg text-center">
+                <p className="text-xs text-gray-500 mb-1">{user.name}</p>
+                <div className="text-lg font-bold text-blue-700">INTP</div>
               </div>
-              <div className="bg-purple-50 p-4 rounded-lg text-center">
+
+              {/* 상대방 MBTI 예측 */}
+              <div className="col-span-3 bg-purple-50 p-4 rounded-lg text-center shadow-sm">
                 <p className="text-sm text-gray-500 mb-1">{partner.name}</p>
-                <div className="text-2xl font-bold text-purple-700">{data.predictedMbti.partner}</div>
-                <p className="text-xs text-gray-500">{getMbtiComparisonText('partner')}</p>
+                <div className="text-3xl font-bold text-purple-700 mb-1">{finalMbti}</div>
+                <p className="text-xs text-gray-600">정확도 {confidence}</p>
               </div>
+            </div>
+
+            {/* 분석 코멘트 */}
+            <div className="mt-4 p-3 bg-gray-50 rounded-lg text-sm text-gray-700">
+              {comment}
             </div>
           </CardContent>
         </Card>
@@ -197,10 +217,9 @@ const PersonalityTab: React.FC = () => {
                     <Badge 
                       key={trait.trait}
                       className={`px-3 py-1.5 ${
-                        trait.level >= 80 ? 'bg-blue-500 text-white' :
-                        trait.level >= 60 ? 'bg-blue-200 text-blue-800' : 
+                        trait.selected ? 'bg-blue-500 text-white' :                        
                         'bg-blue-100 text-blue-600'
-                      } text-${getTraitBadgeSize(trait.level)}`}
+                      } text-${getTraitBadgeSize(trait.selected)}`}
                     >
                       {trait.trait}
                     </Badge>
@@ -215,10 +234,9 @@ const PersonalityTab: React.FC = () => {
                     <Badge 
                       key={trait.trait}
                       className={`px-3 py-1.5 ${
-                        trait.level >= 80 ? 'bg-purple-500 text-white' :
-                        trait.level >= 60 ? 'bg-purple-200 text-purple-800' : 
+                        trait.selected ? 'bg-purple-500 text-white' : 
                         'bg-purple-100 text-purple-600'
-                      } text-${getTraitBadgeSize(trait.level)}`}
+                      } text-${getTraitBadgeSize(trait.selected)}`}
                     >
                       {trait.trait}
                     </Badge>

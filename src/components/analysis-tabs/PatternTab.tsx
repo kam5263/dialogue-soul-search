@@ -4,6 +4,7 @@ import { useApp } from '@/contexts/AppContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { Clock } from 'lucide-react';
+import { fetchMetrics } from '@/api/analysis';
 
 const PatternTab: React.FC = () => {
   const { state } = useApp();
@@ -12,26 +13,27 @@ const PatternTab: React.FC = () => {
 
   const [messageRatio, setMessageRatio] = useState<{ [key: string]: number }>({});
   const [responseTime, setResponseTime] = useState<{ [key: string]: number }>({});
-  const [isLoading, setIsLoading] = useState(true);
-
+  const [loading, setLoading] = useState(true);
+    
   useEffect(() => {
-    axios.get('http://localhost:9000/metrics')
-      .then(res => {
-        const data = res.data;
+    const loadData = async () => {
+      try {
+        const data = await fetchMetrics('kakao_sample');
         setMessageRatio(data.message_ratio);
         setResponseTime(data.avg_reply_time);
-        setIsLoading(false);
-      })
-      .catch(err => {
-        console.error('📛 metrics fetch error:', err);
-        setIsLoading(false);
-      });
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
   }, []);
   
-  if (isLoading) {
+  if (loading) {
     return <div className="p-6 text-center">📊 데이터를 불러오는 중입니다...</div>;
   }
-  
+
   // Prepare message ratio data for pie chart
   const messageRatioData = [
     { name: user.name, value: messageRatio[user.name] ?? 0 },

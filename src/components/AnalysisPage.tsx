@@ -71,7 +71,7 @@ const AnalysisPage: React.FC = () => {
                 <BarChart2 className="h-4 w-4" /> <span className="hidden md:inline">대화 내용</span><span className="md:hidden">내용</span>
               </TabsTrigger>
               <TabsTrigger value="summary" className="flex items-center gap-2">
-                <Lightbulb className="h-4 w-4" /> <span className="hidden md:inline">요약 및 추천</span><span className="md:hidden">요약</span>
+                <Lightbulb className="h-4 w-4" /> <span className="hidden md:inline">맞춤형 솔루션</span><span className="md:hidden">요약</span>
               </TabsTrigger>
             </TabsList>
           </div>

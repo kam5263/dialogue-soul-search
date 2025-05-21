@@ -6,28 +6,30 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { User, UserRound, ArrowLeft, ArrowRight } from 'lucide-react';
+import { fetchMetrics } from '@/api/analysis';
 
 const AffinityTab: React.FC = () => {
   const { state } = useApp();
   const data = state.analysisData!;
   const { user, partner } = state.userInfo;
   const [mildangIndex, setMildangIndex] = useState<{ [key: string]: number}>({});
-  const [isLoading, setIsLoading] = useState(true);
-
+  const [loading, setLoading] = useState(true);
+  
   useEffect(() => {
-    axios.get('http://localhost:9000/metrics')
-      .then(res => {
-        const data = res.data;
+    const loadData = async () => {
+      try {
+        const data = await fetchMetrics('kakao_sample');
         setMildangIndex(data.mildang_index);
-        setIsLoading(false);
-      })
-      .catch(err => {
-        console.error('📛 metrics fetch error:', err);
-        setIsLoading(false);
-      });
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
   }, []);
   
-  if (isLoading) {
+  if (loading) {
     return <div className="p-6 text-center">📊 데이터를 불러오는 중입니다...</div>;
   }
   
@@ -118,22 +120,20 @@ const AffinityTab: React.FC = () => {
             {/* Tug of war visualization with avatars on the sides */}
             <div className="relative my-8">
               {/* User side (left) */}
-              <div className="flex items-center absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2">
+              <div className="flex items-center absolute left-0 top-1/2 -translate-y-2/3">
                 <div className="relative flex flex-col items-center">
-                  <Avatar className="h-12 w-12 border-2 border-blue-400">
+                  <Avatar className="h-12">
                     <AvatarImage src="/user.png" alt={`${user.name} 아바타`} />
                     <AvatarFallback>{user.name[0]}</AvatarFallback>
                   </Avatar>
                   <span className="text-xs font-medium mt-1 text-blue-600">{user.name}</span>
-                  <ArrowRight className="h-6 w-6 mt-1 text-blue-600" />
                 </div>
               </div>
               
               {/* Partner side (right) */}
-              <div className="flex items-center absolute right-0 top-1/2 -translate-y-1/2 translate-x-2">
-                <div className="relative flex flex-col items-center">
-                  <ArrowLeft className="h-6 w-6 mb-1 text-purple-600" />
-                  <Avatar className="h-12 w-12 border-2 border-purple-400">
+              <div className="flex items-center absolute right-0 top-1/2 -translate-y-2/3">
+                <div className="relative flex flex-col items-center">                  
+                  <Avatar className="h-12">
                     <AvatarImage src="/partner.png" alt={`${partner.name} 아바타`} />
                     <AvatarFallback>{partner.name[0]}</AvatarFallback>
                   </Avatar>
@@ -150,16 +150,14 @@ const AffinityTab: React.FC = () => {
                     <div 
                       className="absolute left-0 h-full bg-blue-500 rounded-l-full transition-all duration-500"
                       style={{ width: `${userPushPullPercentage}%` }}
-                    >
-                      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-gray-700 rounded-full border-2 border-white"></div>
+                    >                      
                     </div>
                     
                     {/* Partner's pull */}
                     <div 
                       className="absolute right-0 h-full bg-purple-500 rounded-r-full transition-all duration-500"
                       style={{ width: `${100 - userPushPullPercentage}%` }}
-                    >
-                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-gray-700 rounded-full border-2 border-white"></div>
+                    >                      
                     </div>
                   </div>
                 </div>
