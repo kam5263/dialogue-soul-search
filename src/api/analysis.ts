@@ -11,7 +11,16 @@ export const fetchEmotionAnalysis = async (fileName: string) => {
 };
 
 export const fetchMetrics = async (fileName: string) => {
-  const response = await fetch(DOMAIN + `/metrics/` + fileName);
+  const response = await fetch(DOMAIN + `/pattern/` + fileName);
+  if (!response.ok) {
+    throw new Error('Failed to fetch emotion analysis data');
+  }
+  return response.json();
+};
+
+export const fetchTopic = async (fileName: string) => {
+  //const response = await fetch(DOMAIN + `/topic/` + fileName);
+  const response = await fetch(DOMAIN + `/topic/`);
   if (!response.ok) {
     throw new Error('Failed to fetch emotion analysis data');
   }
