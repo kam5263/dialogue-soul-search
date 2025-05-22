@@ -11,47 +11,17 @@ const PatternTab: React.FC = () => {
   const data = state.analysisData!;
   const { user, partner } = state.userInfo;
 
-  const [messageRatio, setMessageRatio] = useState<{ [key: string]: number }>({});
-  const [responseTime, setResponseTime] = useState<{ [key: string]: number }>({});
-  const [loading, setLoading] = useState(true);
-    
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const data = await fetchMetrics('kakao_sample');
-        setMessageRatio(data.message_ratio);
-        setResponseTime(data.avg_reply_time);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadData();
-  }, []);
-  
-  if (loading) {
-    return <div className="p-6 text-center">📊 데이터를 불러오는 중입니다...</div>;
-  }
-
   // Prepare message ratio data for pie chart
   const messageRatioData = [
-    { name: user.name, value: messageRatio[user.name] ?? 0 },
-    { name: partner.name, value: messageRatio[partner.name] ?? 0 }
+    { name: user.name, value: data.pattern.message_ratio[user.name] ?? 0 },
+    { name: partner.name, value: data.pattern.message_ratio[partner.name] ?? 0 }
   ];
 
-  const userTime = responseTime[user.name] ?? 0;
-  const partnerTime = responseTime[partner.name] ?? 0;
+  const userTime = data.pattern.avg_reply_time[user.name] ?? 0;
+  const partnerTime = data.pattern.avg_reply_time[partner.name] ?? 0;
   
   const COLORS = ['#3B82F6', '#8B5CF6'];
   
-  // Prepare time distribution data
-  const timeDistributionData = data.timeDistribution.hours.map((hour, index) => ({
-    hour,
-    [user.name]: data.timeDistribution.user[index],
-    [partner.name]: data.timeDistribution.partner[index]
-  }));
-
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-6">대화 패턴 분석</h2>
@@ -88,8 +58,8 @@ const PatternTab: React.FC = () => {
             
             <div className="mt-4 text-center">
               <p className="text-gray-500 text-sm">
-                {user.name}님이 전체 대화의 <strong>{data.messageRatio.user}%</strong>를,<br />
-                {partner.name}님이 <strong>{data.messageRatio.partner}%</strong>를 차지하고 있습니다.
+                {user.name}님이 전체 대화의 <strong>{data.pattern.message_ratio[user.name]}%</strong>를,<br />
+                {partner.name}님이 <strong>{data.pattern.message_ratio[partner.name]}%</strong>를 차지하고 있습니다.
               </p>
             </div>
           </CardContent>
@@ -106,7 +76,7 @@ const PatternTab: React.FC = () => {
                 <div className="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center mb-4">
                   <div className="text-center">
                     <Clock className="h-6 w-6 text-blue-600 mx-auto mb-1" />
-                    <span className="block text-xl font-bold text-blue-600">{data.responseTime.user}분</span>
+                    <span className="block text-xl font-bold text-blue-600">{userTime}분</span>
                   </div>
                 </div>
                 <p className="text-sm text-center">{user.name}</p>
@@ -116,7 +86,7 @@ const PatternTab: React.FC = () => {
                 <div className="w-24 h-24 rounded-full bg-purple-100 flex items-center justify-center mb-4">
                   <div className="text-center">
                     <Clock className="h-6 w-6 text-purple-600 mx-auto mb-1" />
-                    <span className="block text-xl font-bold text-purple-600">{data.responseTime.partner}분</span>
+                    <span className="block text-xl font-bold text-purple-600">{partnerTime}분</span>
                   </div>
                 </div>
                 <p className="text-sm text-center">{partner.name}</p>
@@ -145,66 +115,7 @@ const PatternTab: React.FC = () => {
       </div>
       
       {/* Time Distribution Chart */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">시간별 대화량</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={timeDistributionData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="hour" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey={user.name} fill="#3B82F6" />
-                <Bar dataKey={partner.name} fill="#8B5CF6" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-          
-          <div className="mt-6 pt-4 border-t">
-            <h4 className="font-medium text-sm mb-2">시간별 대화 패턴 인사이트</h4>
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <p className="text-sm">
-                {(() => {
-                  // Find peak time for user
-                  const userPeakHourIndex = data.timeDistribution.user.indexOf(
-                    Math.max(...data.timeDistribution.user)
-                  );
-                  const userPeakHour = data.timeDistribution.hours[userPeakHourIndex];
-                  
-                  // Find peak time for partner
-                  const partnerPeakHourIndex = data.timeDistribution.partner.indexOf(
-                    Math.max(...data.timeDistribution.partner)
-                  );
-                  const partnerPeakHour = data.timeDistribution.hours[partnerPeakHourIndex];
-                  
-                  return (
-                    <>
-                      {user.name}님은 <strong>{userPeakHour}</strong>에 가장 활발하게 대화하고,
-                      {partner.name}님은 <strong>{partnerPeakHour}</strong>에 가장 활발하게 대화합니다.
-                      {userPeakHour === partnerPeakHour ? (
-                        <span className="block mt-2 text-green-600">
-                          두 사람의 대화 활동 시간이 일치하여 소통이 원활할 수 있습니다.
-                        </span>
-                      ) : (
-                        <span className="block mt-2 text-amber-600">
-                          두 사람의 활발한 대화 시간대가 다르므로, 중요한 대화는 서로의 활동 시간을 고려하여 계획하는 것이 좋습니다.
-                        </span>
-                      )}
-                    </>
-                  );
-                })()}
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      
     </div>
   );
 };

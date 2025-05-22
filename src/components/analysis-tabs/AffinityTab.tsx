@@ -12,29 +12,14 @@ const AffinityTab: React.FC = () => {
   const { state } = useApp();
   const data = state.analysisData!;
   const { user, partner } = state.userInfo;
-  const [mildangIndex, setMildangIndex] = useState<{ [key: string]: number}>({});
-  const [loading, setLoading] = useState(true);
-  
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const data = await fetchMetrics('kakao_sample');
-        setMildangIndex(data.mildang_index);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadData();
-  }, []);
-  
-  if (loading) {
-    return <div className="p-6 text-center">📊 데이터를 불러오는 중입니다...</div>;
-  }
-  
+
   // Calculate push-pull percentage for display
-  const userPushPullPercentage = mildangIndex[user.name]
+  const userPushPullPercentage = data.pattern.mildang_index[user.name]
+  //
+  const parsedComments = data.likability_comments.map(comment => {
+    const [title, content] = comment.split("\n");
+    return { title, content };
+  });
 
   return (
     <div className="p-6">
@@ -168,18 +153,18 @@ const AffinityTab: React.FC = () => {
                 </div>
               </div>
               
-              <div className="flex justify-between text-sm text-gray-500 mx-16 mt-2 mb-4">
+              {/* <div className="flex justify-between text-sm text-gray-500 mx-16 mt-2 mb-4">
                 <span>수동적/반응형</span>
                 <span>적극적/주도형</span>
-              </div>
+              </div> */}
             </div>
             
             <div className="mt-8">
-              {Math.abs(data.pushPullIndex.user - data.pushPullIndex.partner) > 30 ? (
+              {Math.abs(data.pattern.mildang_index[user.name] - data.pattern.mildang_index[partner.name] ) > 30 ? (
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-amber-800">
                   <p className="font-medium">밀당 불균형이 감지되었습니다</p>
                   <p className="text-sm mt-1">
-                    대화의 주도권이 {data.pushPullIndex.user > data.pushPullIndex.partner ? user.name : partner.name}에게 많이 치우쳐 있습니다. 
+                    대화의 주도권이 {data.pattern.mildang_index[user.name] > data.pattern.mildang_index[partner.name] ? user.name : partner.name}에게 많이 치우쳐 있습니다. 
                     더 균형있는 대화를 위해 서로의 대화 방식을 조정해보세요.
                   </p>
                 </div>
@@ -204,18 +189,18 @@ const AffinityTab: React.FC = () => {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-blue-50 p-4 rounded-lg">
-              <h3 className="font-medium text-blue-800 mb-2">응답 패턴</h3>
-              <p className="text-sm">{data.insights.responsePatterns}</p>
+              <h3 className="font-medium text-blue-800 mb-2">{parsedComments[0].title}</h3>
+              <p className="text-sm">{parsedComments[0].content}</p>
             </div>
             
             <div className="bg-purple-50 p-4 rounded-lg">
-              <h3 className="font-medium text-purple-800 mb-2">최적 시간대</h3>
-              <p className="text-sm">{data.insights.optimalTimes}</p>
+              <h3 className="font-medium text-purple-800 mb-2">{parsedComments[1].title}</h3>
+              <p className="text-sm">{parsedComments[1].content}</p>
             </div>
             
             <div className="bg-indigo-50 p-4 rounded-lg">
-              <h3 className="font-medium text-indigo-800 mb-2">관계 균형</h3>
-              <p className="text-sm">{data.insights.relationshipBalance}</p>
+              <h3 className="font-medium text-indigo-800 mb-2">{parsedComments[2].title}</h3>
+              <p className="text-sm">{parsedComments[2].content}</p>
             </div>
           </div>
         </CardContent>

@@ -14,7 +14,12 @@ import SummaryTab from './analysis-tabs/SummaryTab';
 const AnalysisPage: React.FC = () => {
   const { state, goToStep, setAnalysisTab, resetApp } = useApp();
   
+  if (state.isAnalyzing) {
+    return <div className="text-center p-6 text-gray-500">분석 중입니다...</div>;
+  }
+  
   if (!state.analysisData) {
+    console.log('⚠️ state.analysisData is null in AnalysisPage:', state);
     return <div>분석 데이터가 없습니다.</div>;
   }
   

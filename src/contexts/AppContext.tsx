@@ -2,14 +2,19 @@
 import React, { createContext, useContext, useState } from 'react';
 import { AppState } from '../types';
 import { generateMockAnalysisData } from '../utils/mockData';
+import { parseJsonData } from '@/utils/parser'
+import { fetchEmotionAnalysis, fetchLLM, fetchMetrics } from '@/api/analysis';
+import { PartyPopper } from 'lucide-react';
 
 // Define initial state
 const initialState: AppState = {
   uploadedFile: null,
+  fileName: null,
   userInfo: {
-    user: { name: '', mbti: '', gender: '' },
-    partner: { name: '', mbti: '', gender: '' },
+    user: { name: '', mbti: '', gender: ''},
+    partner: { name: '', mbti: '', gender: ''},
   },
+  predictedSpeakers: [],
   analysisData: null,
   currentStep: 'upload',
   analysisTab: 'personality',
@@ -18,11 +23,11 @@ const initialState: AppState = {
 
 type AppContextType = {
   state: AppState;
-  setUploadedFile: (file: File | null) => void;
   setUserInfo: (user: 'user' | 'partner', info: Partial<AppState['userInfo']['user']>) => void;
   goToStep: (step: AppState['currentStep']) => void;
+  goToStepWithFile: (step: AppState['currentStep'], file: File) => void;
   setAnalysisTab: (tab: AppState['analysisTab']) => void;
-  startAnalysis: () => void;
+  startAnalysis: (id:number, file_name: string) => void;
   resetApp: () => void;
 };
 
@@ -30,10 +35,6 @@ export const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, setState] = useState<AppState>(initialState);
-
-  const setUploadedFile = (file: File | null) => {
-    setState((prev) => ({ ...prev, uploadedFile: file }));
-  };
 
   const setUserInfo = (user: 'user' | 'partner', info: Partial<AppState['userInfo']['user']>) => {
     setState((prev) => ({
@@ -49,24 +50,66 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setState((prev) => ({ ...prev, currentStep: step }));
   };
 
+  const goToStepWithFile = (step: AppState['currentStep'], file: File) => {
+    
+    //파일 업로드
+    const formData = new FormData();
+    formData.append('chat_file', file);
+    const res = fetch('http://sogang-heart-insight-bo-production.up.railway.app/file', {
+        method: 'POST',
+        body: formData, //파일 + 사용자정보
+    })
+    .then((res) => res.json())  // json 파싱
+    .then((result) => {
+      const speakers = result.speakers;
+      setState((prev) => ({
+        ...prev,
+        currentStep: step,
+        uploadedFile: file,
+        predictedSpeakers: speakers,
+        fileName: result.uploaded_filename
+      }));
+    })
+  };
+
   const setAnalysisTab = (tab: AppState['analysisTab']) => {
     setState((prev) => ({ ...prev, analysisTab: tab }));
   };
 
-  const startAnalysis = async () => {
+  const startAnalysis = async (id: number, file_name: string) => {
     setState((prev) => ({ ...prev, isAnalyzing: true }));
+
+    const llmResult = await fetchLLM(id);
+    const pattern = await fetchMetrics(file_name);
+
+    const affinityScores = {
+      user: 43,
+      partner: 57
+    }
+    const analysisData = {
+      ...parseJsonData(llmResult.result),
+      pattern,
+      affinityScores,
+    };
     
-    // Simulate API call with a delay
+    
+    console.log("🎯 setState 직전 llmData.result:", analysisData);
+
+    // 먼저 데이터만 설정하고
+    setState((prev) => ({
+      ...prev,
+      analysisData: analysisData,
+      isAnalyzing: false,
+    }));
+
+    // setTimeout 0을 통해 다음 렌더링 사이클로 밀어넣기
     setTimeout(() => {
-      const mockData = generateMockAnalysisData(state.userInfo);
-      
       setState((prev) => ({
         ...prev,
-        analysisData: mockData,
-        isAnalyzing: false,
         currentStep: 'analysis',
       }));
-    }, 2000);
+    }, 0);
+    console.log("✅ 분석 상태 저장 완료");
   };
 
   const resetApp = () => {
@@ -75,9 +118,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const value = {
     state,
-    setUploadedFile,
     setUserInfo,
     goToStep,
+    goToStepWithFile,
     setAnalysisTab,
     startAnalysis,
     resetApp,

@@ -3,25 +3,19 @@ export interface UserInfo {
   name: string;
   mbti?: string;
   gender?: 'male' | 'female' | '';
+  extractedName?: string;
 }
 
 export interface AnalysisData {
   // Personality analysis
-  predictedMbti: {
-    user: string;
-    partner: string;
+  mbti_prediction: {
+    confidence: string;
+    type: string;
+    mbti_comments: string;
   };
-  toneAnalysis: {
-    user: {
-      formal: number;
-      casual: number;
-      emotional: number;
-    };
-    partner: {
-      formal: number;
-      casual: number;
-      emotional: number;
-    };
+  convalsational_tone: {
+    user: string;
+    partener: string;
   };
   emotionScores: {
     user: {
@@ -70,16 +64,35 @@ export interface AnalysisData {
     user: number;
     partner: number;
   };
-  pushPullIndex: {
-    user: number;
-    partner: number;
+  pattern: {
+    mildang_index: {
+      user: string;
+      partner: string;
+    },
+    message_ratio: {
+      user: string;
+      partner: string;
+    },
+    question_ratio: {
+      user: string;
+      partner: string;
+    },
+    avg_reply_time: {
+      user: string;
+      partner: string;
+    },
+    avg_message_length: {
+      user: string;
+      partner: string;
+    }
+    ,
+    session_start_ratio: {
+      user: string;
+      partner: string;
+    }
   };
-  insights: {
-    responsePatterns: string;
-    optimalTimes: string;
-    relationshipBalance: string;
-  };
-
+  
+  likability_comments: string[];
   // Conversation pattern analysis
   messageRatio: {
     user: number;
@@ -112,20 +125,19 @@ export interface AnalysisData {
 
   // Summary and recommendations
   solutions: {
-    timing: string;
-    actions: string;
-    topics: string;
-    responses: string;
-  };
-  actionPlan: string[];
+    conversation_advice: string[];
+    action_plan: string[];
+  };  
 }
 
 export interface AppState {
   uploadedFile: File | null;
+  fileName: string | null;
   userInfo: {
     user: UserInfo;
     partner: UserInfo;
   };
+  predictedSpeakers : string[];
   analysisData: AnalysisData | null;
   currentStep: 'upload' | 'info' | 'analysis';
   analysisTab: 'personality' | 'affinity' | 'pattern' | 'content' | 'summary';

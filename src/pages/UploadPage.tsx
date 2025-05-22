@@ -1,11 +1,14 @@
 ﻿import React, { useEffect, useState } from 'react';
 import { ChevronLeft } from 'lucide-react';
+import { useApp } from '@/contexts/AppContext';
 
 interface Props {
     uploadedFile: File | null;
 }
 
 const UploadPage: React.FC<Props> = ({ uploadedFile }) => {
+    const { state, goToStep, setUserInfo, startAnalysis } = useApp();
+
     const [showToast, setShowToast] = useState(false);
 
     // 사용자 정보 상태
@@ -48,7 +51,6 @@ const UploadPage: React.FC<Props> = ({ uploadedFile }) => {
 
             const data = await res.json();
             console.log('서버 응답:', data);
-            alert('분석 완료');
         } catch (err) {
             console.error(err);
             alert('서버 연결에 실패했습니다.');

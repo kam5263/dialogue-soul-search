@@ -5,6 +5,9 @@ import { useApp } from '@/contexts/AppContext';
 import FileUploadPage from '@/components/FileUploadPage';
 import UserInfoPage from '@/components/UserInfoPage';
 import AnalysisPage from '@/components/AnalysisPage';
+//import UploadPage from '@/pages/UploadPage';
+//import FileUploadPage from '@/pages/FileUploadPage';
+
 // 🧠 헤더 컴포넌트 추가
 const Header = () => {
   return (
@@ -21,9 +24,9 @@ const AppContent = () => {
   // Render different pages based on the current step
   switch (state.currentStep) {
     case 'upload':
-      return <FileUploadPage />;
+      return <FileUploadPage  />;
     case 'info':
-      return <UserInfoPage />;
+      return <UserInfoPage uploadedFile={state.uploadedFile} />;
     case 'analysis':
       return <AnalysisPage />;
     default:

@@ -5,26 +5,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { fetchEmotionAnalysis, fetchLLM } from '@/api/analysis'; // 위에서 만든 API 함수
-import { parseJsonData } from '@/utils/parser'
-import dayjs from 'dayjs';
 
 const allTraits = ['친근함', '유머러스', '솔직함', '공감적', '논리적'];
 
 const PersonalityTab: React.FC = () => {
   const { state } = useApp();
   const data = state.analysisData!;
-  const { user, partner } = state.userInfo;
-  //MBTI
-  const [finalMbti, setFinalMbti] = useState('');
-  const [confidence, setConfidence] = useState('');
-  const [comment, setComment] = useState('');
-  //Tone
-  const [speechTraits, setSpeechTraits] = useState({
-    user: [],
-    partner: [],
-  });
 
+  const { user, partner } = state.userInfo;
+  //Tone
+  const [speechTraits, setSpeechTraits] = useState<any | null>(null);
   const [emotionData, setEmotionData] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   
@@ -47,48 +37,38 @@ const PersonalityTab: React.FC = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const nlpResult = await fetchEmotionAnalysis('gpt_dead_love_sample_30.csv');
-        const llmResult = await fetchLLM('kakao_sample');
+        //const nlpResult = await fetchEmotionAnalysis('sample');
+        //const messages = nlpResult.result.messages;
+        // const dateEmotionMap: Record<string, Record<string, number[]>> = {};
+        // messages.forEach((msg: any) => {
+        //   const date = dayjs(msg.timestamp).format('YYYY-MM-DD');
+        //   if (!dateEmotionMap[date]) dateEmotionMap[date] = {};
+        //   if (!dateEmotionMap[date][msg.sentiment]) dateEmotionMap[date][msg.sentiment] = [];
 
-        const messages = nlpResult.result.messages;
-        const dateEmotionMap: Record<string, Record<string, number[]>> = {};
-        messages.forEach((msg: any) => {
-          const date = dayjs(msg.timestamp).format('YYYY-MM-DD');
-          if (!dateEmotionMap[date]) dateEmotionMap[date] = {};
-          if (!dateEmotionMap[date][msg.sentiment]) dateEmotionMap[date][msg.sentiment] = [];
-
-          dateEmotionMap[date][msg.sentiment].push(msg.confidence);
-        });
+        //   dateEmotionMap[date][msg.sentiment].push(msg.confidence);
+        // });
 
         // 평균값 계산 후 LineChart에 넣을 데이터 생성
-        const timeline = Object.entries(dateEmotionMap).map(([date, sentiments]) => {
-          const dataPoint: any = { name: date };
+        // const timeline = Object.entries(dateEmotionMap).map(([date, sentiments]) => {
+        //   const dataPoint: any = { name: date };
 
-          Object.entries(sentiments).forEach(([emotion, confidences]) => {
-            const avgConfidence = confidences.reduce((a, b) => a + b, 0) / confidences.length;
-            dataPoint[emotion] = parseFloat(avgConfidence.toFixed(3)); // 소수점 3자리로
-          });
+        //   Object.entries(sentiments).forEach(([emotion, confidences]) => {
+        //     const avgConfidence = confidences.reduce((a, b) => a + b, 0) / confidences.length;
+        //     dataPoint[emotion] = parseFloat(avgConfidence.toFixed(3)); // 소수점 3자리로
+        //   });
 
-          return dataPoint;
-        });
+        //   return dataPoint;
+        // });
 
         // 메시지에서 감정 키 자동 추출
-        const emotions = Array.from(new Set(messages.map(msg => msg.sentiment))) as string[];
+        //const emotions = Array.from(new Set(messages.map(msg => msg.sentiment))) as string[];
 
-        // 한글 감정명 그대로 라벨로 사용
-        const labels: Record<string, string> = {};
-        emotions.forEach(emotion => {
-          labels[emotion as string] = emotion as string; // 예: "즐거운(신나는)": "즐거운(신나는)"
-        });
+        //한글 감정명 그대로 라벨로 사용
+        // const labels: Record<string, string> = {};
+        // emotions.forEach(emotion => {
+        //   labels[emotion as string] = emotion as string; // 예: "즐거운(신나는)": "즐거운(신나는)"
+        // });
         
-        //MBTI start//
-        const llmData = parseJsonData(llmResult.result);
-        const partnerMbtiDetail = llmData.mbti_prediction;
-        setFinalMbti(partnerMbtiDetail.type);
-        setConfidence(partnerMbtiDetail.confidence);
-        setComment(partnerMbtiDetail.mbti_commemts);
-        //MBTI end//
-        const { user, partener } = llmData.convalsational_tone;
         const generateTraitList = (selectedTrait) =>
           allTraits.map((trait) => ({
             trait,
@@ -96,15 +76,15 @@ const PersonalityTab: React.FC = () => {
         }));
 
         setSpeechTraits({
-          user: generateTraitList(user),
-          partner: generateTraitList(partener),
+          user: generateTraitList(data.convalsational_tone.user),
+          partner: generateTraitList(data.convalsational_tone.partener),
         });
 
-        setEmotionData(nlpResult.result);
-        setEmotionTimelineData(timeline);
-        setUniqueEmotions(emotions);
-        setEmotionLabels(labels);
-        setSelectedEmotions(emotions);
+        //setEmotionData(nlpResult.result);
+        //setEmotionTimelineData(timeline);
+        //setUniqueEmotions(emotions);
+        //setEmotionLabels(labels);
+        //setSelectedEmotions(emotions);
       } catch (error) {
         console.error(error);
       } finally {
@@ -118,22 +98,23 @@ const PersonalityTab: React.FC = () => {
     return <div className="p-6 text-center text-gray-500">로딩 중...</div>;
   }
 
-  if (!emotionData || emotionTimelineData.length === 0) {
-    return <div className="p-6 text-center text-red-500">데이터를 불러올 수 없습니다.</div>;
-  }
-  const emotionRadarData = Object.entries(emotionData.average_confidence).map(([key, value]) => ({
-    emotion: key,
-    [user.name]: value,
-    [partner.name]: Math.random() * 0.5 + 0.3, // 파트너 데이터가 없다면 예시값
-  }));
+  // if (!emotionData || emotionTimelineData.length === 0) {
+  //   return <div className="p-6 text-center text-red-500">데이터를 불러올 수 없습니다.</div>;
+  // }
 
-  // Colors for the emotion lines
-  const emotionColors = {
-    "즐거운(신나는)": '#10B981',
-    "설레는(기대하는)": '#F59E0B',
-    "일상적인": '#6B7280',
-    "기쁨(행복한)": '#3B82F6',
-  };
+  // const emotionRadarData = Object.entries(emotionData.average_confidence).map(([key, value]) => ({
+  //   emotion: key,
+  //   [user.name]: value,
+  //   [partner.name]: Math.random() * 0.5 + 0.3, // 파트너 데이터가 없다면 예시값
+  // }));
+
+  // // Colors for the emotion lines
+  // const emotionColors = {
+  //   "즐거운(신나는)": '#10B981',
+  //   "설레는(기대하는)": '#F59E0B',
+  //   "일상적인": '#6B7280',
+  //   "기쁨(행복한)": '#3B82F6',
+  // };
 
   // Prepare line chart data (emotion timeline)
   // const emotionTimelineData = data.emotionTimeline.timestamps.map((time, index) => {
@@ -154,57 +135,107 @@ const PersonalityTab: React.FC = () => {
   //   return dataPoint;
   // });
 
-  // Function to get MBTI comparison text
-  const getMbtiComparisonText = (person: 'user' | 'partner') => {
-    const personData = person === 'user' ? user : partner;
-    const predictedMbti = person === 'user' ? data.predictedMbti.user : data.predictedMbti.partner;
-    
-    if (personData.mbti && personData.mbti !== predictedMbti) {
-      return `(입력: ${personData.mbti})`;
-    }
-    return '';
-  };
-
   // Function to determine badge size based on trait level
   const getTraitBadgeSize = (selected: boolean) => {
     if (selected) return 'lg';
     return 'sm';
   };
 
+  // 아주 간단한 버전, 실제론 MBTI 궁합표 기반으로 더 디테일하게 가능
+const getCompatibilityPercentage = (my: string, partner: string): number => {
+  if (!my || !partner) return 0;
+  // 같은 유형이면 높게
+  if (my === partner) return 90;
+  if (my[0] === partner[0]) return 80;
+  return Math.floor(50 + Math.random() * 30); // 50~80% 랜덤
+};
+
+const getCompatibilityComment = (my: string, partner: string): string => {
+  if (!my || !partner) return 'MBTI 정보가 부족하여 분석할 수 없습니다.';
+  if (my === partner) return '성향이 아주 잘 맞는 편이에요!';
+  if (my[0] !== partner[0]) return '성격 차이가 있지만 서로에게 신선할 수 있어요!';
+  return '비슷한 점이 많아 무난한 조합입니다.';
+};
+
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-6">성향 분석</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <Card>
+        {/* <Card>
           <CardHeader>
             <CardTitle className="text-lg">MBTI 예측</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-5 gap-4 items-center">
-              {/* 나의 MBTI */}
               <div className="col-span-2 bg-blue-50 p-3 rounded-lg text-center">
                 <p className="text-xs text-gray-500 mb-1">{user.name}</p>
-                <div className="text-lg font-bold text-blue-700">INTP</div>
+                <div className="text-lg font-bold text-blue-700">{state.userInfo.user.mbti}</div>
               </div>
 
-              {/* 상대방 MBTI 예측 */}
               <div className="col-span-3 bg-purple-50 p-4 rounded-lg text-center shadow-sm">
                 <p className="text-sm text-gray-500 mb-1">{partner.name}</p>
-                <div className="text-3xl font-bold text-purple-700 mb-1">{finalMbti}</div>
-                <p className="text-xs text-gray-600">정확도 {confidence}</p>
+                <div className="text-3xl font-bold text-purple-700 mb-1">{data.mbti_prediction.type}</div>
+                <p className="text-xs text-gray-600">정확도 {data.mbti_prediction.confidence}</p>
               </div>
             </div>
 
-            {/* 분석 코멘트 */}
             <div className="mt-4 p-3 bg-gray-50 rounded-lg text-sm text-gray-700">
-              {comment}
+              {data.mbti_prediction.mbti_comments}
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
+        <Card>
+      <CardHeader>
+        <CardTitle className="text-lg">MBTI 예측</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="bg-gray-100 p-4 rounded-lg mb-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="text-center">
+              <div className="text-sm text-gray-500 mb-1">{user.name}의 MBTI</div>
+              <div className="text-xl font-bold text-indigo-600">{user.mbti}</div>
+            </div>
+            <div className="text-center">
+              <div className="text-sm text-gray-500 mb-1">{partner.name}의 MBTI</div>
+              <div className="text-xl font-bold text-indigo-600">{partner.mbti}</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <div className="flex justify-between items-center mb-2">
+            <h4 className="font-semibold text-gray-800">분석 결과</h4>
+            <div className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-medium">
+              정확도 {data.mbti_prediction.confidence}
+            </div>
+          </div>
+          <div className="bg-white border-2 border-indigo-500 rounded-lg p-4 text-center mb-4">
+            <div className="text-sm text-gray-500">{partner.name}의 예측 MBTI</div>
+            <div className="text-2xl font-bold text-indigo-700">{data.mbti_prediction.type}</div>
+            <div className={`text-sm font-medium ${partner.mbti ==  data.mbti_prediction.type? 'text-green-600' : 'text-red-500'}`}>
+              {partner.mbti ==  data.mbti_prediction.type ? '✓ 입력값과 일치' : '입력값과 다름'}
+            </div>
+          </div>
+          <div className="bg-gray-50 p-4 rounded-md text-sm text-gray-700">
+            {data.mbti_prediction.mbti_comments}
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-4 rounded-lg">
+          <div className="flex justify-between items-center mb-2">
+            <div className="font-semibold">{user.mbti} ♥ {data.mbti_prediction.type} 궁합</div>
+            <div className="text-xl font-bold">{getCompatibilityPercentage(user.mbti, data.mbti_prediction.type)}</div>
+          </div>
+          <div className="text-sm opacity-90">
+            {getCompatibilityComment(user.mbti, data.mbti_prediction.type)}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
 
         {/* Speech Style Analysis Card - New format with badges */}
-        <Card>
+        {<Card>
           <CardHeader>
             <CardTitle className="text-lg">말투 분석</CardTitle>
           </CardHeader>
@@ -245,11 +276,11 @@ const PersonalityTab: React.FC = () => {
               </div>
             </div>
           </CardContent>
-        </Card>
+        </Card>}
       </div>
 
       {/* Spider Chart (Emotion Radar) */}
-      <Card className="mb-6">
+      {/* <Card className="mb-6">
         <CardHeader>
           <CardTitle className="text-lg">감정 성향 분석</CardTitle>
         </CardHeader>
@@ -278,10 +309,10 @@ const PersonalityTab: React.FC = () => {
             </ResponsiveContainer>
           </div>
         </CardContent>
-      </Card>
+      </Card> */}
 
       {/* Emotion Timeline with Selectable Emotions */}
-      <Card>
+      {/* <Card>
         <CardHeader>
           <CardTitle className="text-lg">감정 변화 추이</CardTitle>
         </CardHeader>
@@ -320,23 +351,8 @@ const PersonalityTab: React.FC = () => {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                {/* Only show selected emotions */}
                 {selectedEmotions.map(emotion => (
-                  <React.Fragment key={emotion}>
-                    {/* <Line 
-                      type="monotone" 
-                      dataKey={`${user.name}-${emotion}`} 
-                      name={`${user.name} (${emotionLabels[emotion as keyof typeof emotionLabels]})`}
-                      stroke={emotionColors[emotion as keyof typeof emotionColors]} 
-                      activeDot={{ r: 8 }} 
-                    />
-                    <Line 
-                      type="monotone" 
-                      dataKey={`${partner.name}-${emotion}`} 
-                      name={`${partner.name} (${emotionLabels[emotion as keyof typeof emotionLabels]})`}
-                      stroke={emotionColors[emotion as keyof typeof emotionColors]} 
-                      strokeDasharray="5 5" 
-                    /> */}
+                  <React.Fragment key={emotion}>                    
                     {selectedEmotions.map(emotion => (
                       <Line 
                         key={emotion}
@@ -354,7 +370,7 @@ const PersonalityTab: React.FC = () => {
             </ResponsiveContainer>
           </div>
         </CardContent>
-      </Card>
+      </Card> */}
     </div>
   );
 };
