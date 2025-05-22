@@ -237,7 +237,7 @@ const UserInfoPage: React.FC<Props> = ({ uploadedFile }) => {
 
         try {
             //server에 POST 요청 파이썬 Flask 서버
-            const res = await fetch('http://sogang-heart-insight-bo-production.up.railway.app/analyze', {
+            const res = await fetch('https://sogang-heart-insight-bo-production.up.railway.app/analyze', {
                 method: 'POST',
                 body: formData, //파일 + 사용자정보
             });

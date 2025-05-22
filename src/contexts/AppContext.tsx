@@ -55,7 +55,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     //파일 업로드
     const formData = new FormData();
     formData.append('chat_file', file);
-    const res = fetch('http://sogang-heart-insight-bo-production.up.railway.app/file', {
+    const res = fetch('https://sogang-heart-insight-bo-production.up.railway.app/file', {
         method: 'POST',
         body: formData, //파일 + 사용자정보
     })

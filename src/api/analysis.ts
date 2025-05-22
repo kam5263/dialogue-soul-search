@@ -1,6 +1,6 @@
 // src/api/analysis.ts
 
-const DOMAIN = 'http://sogang-heart-insight-bo-production.up.railway.app'
+const DOMAIN = 'https://sogang-heart-insight-bo-production.up.railway.app'
 
 export const fetchEmotionAnalysis = async (fileName: string) => {
   const response = await fetch(DOMAIN + `/nlp/sample`);
