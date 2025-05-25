@@ -2,7 +2,15 @@
   "ExpandedNodes": [
     "",
     "\\src",
-    "\\src\\pages"
+    "\\src\\api",
+    "\\src\\components",
+    "\\src\\components\\analysis-tabs",
+    "\\src\\contexts",
+    "\\src\\hooks",
+    "\\src\\lib",
+    "\\src\\pages",
+    "\\src\\utils"
   ],
+  "SelectedNode": "\\src\\pages\\FileUploadPage.tsx",
   "PreviewInSolutionExplorer": false
 }

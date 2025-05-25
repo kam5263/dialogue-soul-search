@@ -28,7 +28,8 @@ type AppContextType = {
   goToStepWithFile: (step: AppState['currentStep'], file: File) => void;
   setAnalysisTab: (tab: AppState['analysisTab']) => void;
   startAnalysis: (id:number, file_name: string) => void;
-  resetApp: () => void;
+    resetApp: () => void;
+    setAnalysisData: (data: AppState['analysisData']) => void; 
 };
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -50,31 +51,40 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setState((prev) => ({ ...prev, currentStep: step }));
   };
 
-  const goToStepWithFile = (step: AppState['currentStep'], file: File) => {
-    
-    //파일 업로드
-    const formData = new FormData();
-    formData.append('chat_file', file);
-    const res = fetch('https://sogang-heart-insight-bo-production.up.railway.app/file', {
-        method: 'POST',
-        body: formData, //파일 + 사용자정보
-    })
-    .then((res) => res.json())  // json 파싱
-    .then((result) => {
-      const speakers = result.speakers;
-      setState((prev) => ({
-        ...prev,
-        currentStep: step,
-        uploadedFile: file,
-        predictedSpeakers: speakers,
-        fileName: result.uploaded_filename
-      }));
-    })
-  };
+    const goToStepWithFile = (step: AppState['currentStep'], file: File) => {
+        const formData1 = new FormData();
+        formData1.append('chat_file', file);
+
+        const formData2 = new FormData();
+        formData2.append('chat_file', file);
+
+        // 기존 서버 업로드
+        fetch('https://sogang-heart-insight-bo-production.up.railway.app/file', {
+            method: 'POST',
+            body: formData1,
+        })
+            .then((res) => res.json())
+            .then((result) => {
+                const speakers = result.speakers;
+                setState((prev) => ({
+                    ...prev,
+                    currentStep: step,
+                    uploadedFile: file,
+                    predictedSpeakers: speakers,
+                    fileName: result.uploaded_filename,
+                }));
+            });
+    };
 
   const setAnalysisTab = (tab: AppState['analysisTab']) => {
     setState((prev) => ({ ...prev, analysisTab: tab }));
   };
+    const setAnalysisData = (data: AppState['analysisData']) => {
+        setState((prev) => ({
+            ...prev,
+            analysisData: data,
+        }));
+    };
 
   const startAnalysis = async (id: number, file_name: string) => {
     setState((prev) => ({ ...prev, isAnalyzing: true }));
@@ -123,7 +133,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     goToStepWithFile,
     setAnalysisTab,
     startAnalysis,
-    resetApp,
+      resetApp,
+      setAnalysisData,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
