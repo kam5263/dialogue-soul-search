@@ -188,6 +188,7 @@ import React, { useEffect, useState } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
 import { Button } from "@/components/ui/button";
+import { API_URL } from '@/config.js';
 
 interface Props {
     uploadedFile: File | null;
@@ -237,7 +238,7 @@ const UserInfoPage: React.FC<Props> = ({ uploadedFile }) => {
 
         try {
             //server에 POST 요청 파이썬 Flask 서버
-            const res = await fetch('https://sogang-heart-insight-bo-production.up.railway.app/analyze', {
+            const res = await fetch(API_URL + '/analyze', {
                 method: 'POST',
                 body: formData, //파일 + 사용자정보
             });
@@ -253,7 +254,7 @@ const UserInfoPage: React.FC<Props> = ({ uploadedFile }) => {
             goToStep('analysis');
         } catch (err) {
             console.error(err);
-            alert('서버 연결에 실패했습니다.');
+            alert(err);
         }
     };
 
@@ -373,7 +374,7 @@ const UserInfoPage: React.FC<Props> = ({ uploadedFile }) => {
                     onClick={handleAnalyze}
                     className="w-full py-2 rounded-full bg-pink-400 text-white font-semibold hover:bg-pink-500 transition"
                 >
-                    분석하기
+                    {state.isAnalyzing ? '분석중...' : '분석하기'}
                 </button>
 
                 {/* Toast 메시지 */}

@@ -1,6 +1,7 @@
 // src/api/analysis.ts
-
-const DOMAIN = 'https://sogang-heart-insight-bo-production.up.railway.app'
+import { API_URL } from '@/config.js';
+//const DOMAIN = 'https://sogang-heart-insight-bo-production.up.railway.app'
+const DOMAIN = API_URL
 
 export const fetchEmotionAnalysis = async (fileName: string) => {
   const response = await fetch(DOMAIN + `/nlp/sample`);
@@ -29,8 +30,8 @@ export const fetchTopic = async (fileName: string) => {
 };
 
 export const fetchLLM = async (id: number) => {
-  //const response = await fetch(DOMAIN + `/analyze-mbti/` + id);
-  const response = await fetch(DOMAIN + `/llm/sample`);
+  const response = await fetch(DOMAIN + `/analyze-mbti/` + id);
+  //const response = await fetch(DOMAIN + `/llm/sample`);
   if (!response.ok) {
     throw new Error('Failed to fetch emotion analysis data');
   }

@@ -76,8 +76,8 @@ const PersonalityTab: React.FC = () => {
         }));
 
         setSpeechTraits({
-          user: generateTraitList(data.convalsational_tone.user),
-          partner: generateTraitList(data.convalsational_tone.partener),
+          user: generateTraitList(data.conversational_tone.user),
+          partner: generateTraitList(data.conversational_tone.partner),
         });
 
         //setEmotionData(nlpResult.result);

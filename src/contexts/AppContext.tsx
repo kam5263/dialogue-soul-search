@@ -5,7 +5,7 @@ import { generateMockAnalysisData } from '../utils/mockData';
 import { parseJsonData } from '@/utils/parser'
 import { fetchEmotionAnalysis, fetchLLM, fetchMetrics } from '@/api/analysis';
 import { PartyPopper } from 'lucide-react';
-
+import { API_URL } from '@/config.js';
 // Define initial state
 const initialState: AppState = {
   uploadedFile: null,
@@ -59,7 +59,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         formData2.append('chat_file', file);
 
         // 기존 서버 업로드
-        fetch('https://sogang-heart-insight-bo-production.up.railway.app/file', {
+        fetch(API_URL + '/file', {
             method: 'POST',
             body: formData1,
         })
@@ -92,16 +92,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const llmResult = await fetchLLM(id);
     const pattern = await fetchMetrics(file_name);
 
-    const affinityScores = {
-      user: 43,
-      partner: 57
-    }
     const analysisData = {
       ...parseJsonData(llmResult.result),
       pattern,
-      affinityScores,
-    };
-    
+    };    
     
     console.log("🎯 setState 직전 llmData.result:", analysisData);
 

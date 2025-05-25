@@ -1,3 +1,4 @@
+import partner from '../../public/partner.png';
 
 export interface UserInfo {
   name: string;
@@ -6,6 +7,12 @@ export interface UserInfo {
   extractedName?: string;
 }
 
+export type TimeLabel =
+  | "새벽(00~06시)"
+  | "오전(06~12시)"
+  | "오후(12~18시)"
+  | "밤(18~00시)";
+
 export interface AnalysisData {
   // Personality analysis
   mbti_prediction: {
@@ -13,9 +20,9 @@ export interface AnalysisData {
     type: string;
     mbti_comments: string;
   };
-  convalsational_tone: {
+  conversational_tone: {
     user: string;
-    partener: string;
+    partner: string;
   };
   emotionScores: {
     user: {
@@ -60,9 +67,9 @@ export interface AnalysisData {
   };
 
   // Affinity analysis
-  affinityScores: {
-    user: number;
-    partner: number;
+  likability_score: {
+    user: string;
+    partner: string;
   };
   pattern: {
     mildang_index: {
@@ -90,6 +97,8 @@ export interface AnalysisData {
       user: string;
       partner: string;
     }
+    ,
+    timeframe_ratio: Record<string, Record<TimeLabel, number>>;
   };
   
   likability_comments: string[];
