@@ -129,6 +129,7 @@ const UploadPage: React.FC<Props> = ({ uploadedFile }) => {
                             <label className="block text-xs font-semibold mb-1">MBTI (선택)</label>
                             <select value={partnerMbti} onChange={(e) => setPartnerMbti(e.target.value)} className="w-full px-3 py-2 rounded border text-sm bg-white text-black">
                                 <option>선택</option>
+                                <option>모름</option>
                                 <option>INTJ</option>
                                 <option>INTP</option>
                                 <option>ENTJ</option>

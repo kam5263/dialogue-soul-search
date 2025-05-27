@@ -137,7 +137,7 @@ const UserInfoPage: React.FC<Props> = ({ uploadedFile }) => {
                                     <label className="block text-xs font-semibold mb-1">MBTI (선택)</label>
                                     <select value={partnerMbti} onChange={(e) => setPartnerMbti(e.target.value)} className="w-full px-3 py-2 rounded border text-sm bg-white text-black">
                                         <option>선택</option>
-                                        {['INTJ', 'INTP', 'ENTJ', 'ENTP', 'INFJ', 'INFP', 'ENFJ', 'ENFP', 'ISTJ', 'ISFJ', 'ESTJ', 'ESFJ', 'ISTP', 'ISFP', 'ESTP', 'ESFP'].map(m => (
+                                        {['모름', 'INTJ', 'INTP', 'ENTJ', 'ENTP', 'INFJ', 'INFP', 'ENFJ', 'ENFP', 'ISTJ', 'ISFJ', 'ESTJ', 'ESFJ', 'ISTP', 'ISFP', 'ESTP', 'ESFP'].map(m => (
                                             <option key={m}>{m}</option>
                                         ))}
                                     </select>
