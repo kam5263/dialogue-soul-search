@@ -11,6 +11,6 @@
     "\\src\\pages",
     "\\src\\utils"
   ],
-  "SelectedNode": "\\src\\pages\\FileUploadPage.tsx",
+  "SelectedNode": "\\src\\components\\analysis-tabs\\ContentTab.tsx",
   "PreviewInSolutionExplorer": false
 }

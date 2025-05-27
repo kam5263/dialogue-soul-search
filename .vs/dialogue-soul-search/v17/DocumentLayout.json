@@ -3,12 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\User\\source\\repos\\dialogue-soul-search\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\User\\source\\repos\\dialogue-soul-search\\src\\contexts\\AppContext.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\contexts\\AppContext.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\User\\source\\repos\\dialogue-soul-search\\src\\components\\analysis-tabs\\ContentTab.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\analysis-tabs\\ContentTab.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\User\\source\\repos\\dialogue-soul-search\\src\\pages\\Index.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\pages\\Index.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\User\\source\\repos\\dialogue-soul-search\\src\\contexts\\AppContext.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\contexts\\AppContext.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\User\\source\\repos\\dialogue-soul-search\\src\\pages\\TestContentPage.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
@@ -67,32 +71,58 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "ContentTab.tsx",
+              "DocumentMoniker": "C:\\Users\\User\\source\\repos\\dialogue-soul-search\\src\\components\\analysis-tabs\\ContentTab.tsx",
+              "RelativeDocumentMoniker": "src\\components\\analysis-tabs\\ContentTab.tsx",
+              "ToolTip": "C:\\Users\\User\\source\\repos\\dialogue-soul-search\\src\\components\\analysis-tabs\\ContentTab.tsx",
+              "RelativeToolTip": "src\\components\\analysis-tabs\\ContentTab.tsx",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-05-25T15:14:23.948Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Index.tsx",
+              "DocumentMoniker": "C:\\Users\\User\\source\\repos\\dialogue-soul-search\\src\\pages\\Index.tsx",
+              "RelativeDocumentMoniker": "src\\pages\\Index.tsx",
+              "ToolTip": "C:\\Users\\User\\source\\repos\\dialogue-soul-search\\src\\pages\\Index.tsx",
+              "RelativeToolTip": "src\\pages\\Index.tsx",
+              "ViewState": "AgIAABUAAAAAAAAAAAAuwC8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-05-25T15:11:33.93Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "AppContext.tsx",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\dialogue-soul-search\\src\\contexts\\AppContext.tsx",
               "RelativeDocumentMoniker": "src\\contexts\\AppContext.tsx",
               "ToolTip": "C:\\Users\\User\\source\\repos\\dialogue-soul-search\\src\\contexts\\AppContext.tsx",
               "RelativeToolTip": "src\\contexts\\AppContext.tsx",
-              "ViewState": "AgIAAEMAAAAAAAAAAAAuwE4AAABKAAAAAAAAAA==",
+              "ViewState": "AgIAAHsAAAAAAAAAAAAuwJUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
               "WhenOpened": "2025-05-22T14:22:25.202Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "TestContentPage.tsx",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\dialogue-soul-search\\src\\pages\\TestContentPage.tsx",
               "RelativeDocumentMoniker": "src\\pages\\TestContentPage.tsx",
               "ToolTip": "C:\\Users\\User\\source\\repos\\dialogue-soul-search\\src\\pages\\TestContentPage.tsx",
               "RelativeToolTip": "src\\pages\\TestContentPage.tsx",
-              "ViewState": "AgIAAC0AAAAAAAAAAAAUwEMAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
               "WhenOpened": "2025-05-22T14:34:57.516Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "analysis.ts",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\dialogue-soul-search\\src\\api\\analysis.ts",
               "RelativeDocumentMoniker": "src\\api\\analysis.ts",
@@ -104,20 +134,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ContentTab.tsx",
-              "DocumentMoniker": "C:\\Users\\User\\source\\repos\\dialogue-soul-search\\src\\components\\analysis-tabs\\ContentTab.tsx",
-              "RelativeDocumentMoniker": "src\\components\\analysis-tabs\\ContentTab.tsx",
-              "ToolTip": "C:\\Users\\User\\source\\repos\\dialogue-soul-search\\src\\components\\analysis-tabs\\ContentTab.tsx",
-              "RelativeToolTip": "src\\components\\analysis-tabs\\ContentTab.tsx",
-              "ViewState": "AgIAAAIAAAAAAAAAAAAcwH0AAAAeAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2025-05-22T14:49:03.771Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "AffinityTab.tsx",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\dialogue-soul-search\\src\\components\\analysis-tabs\\AffinityTab.tsx",
               "RelativeDocumentMoniker": "src\\components\\analysis-tabs\\AffinityTab.tsx",
@@ -129,7 +146,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "calendar.tsx",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\dialogue-soul-search\\src\\components\\ui\\calendar.tsx",
               "RelativeDocumentMoniker": "src\\components\\ui\\calendar.tsx",
@@ -141,20 +158,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "FileUploadPage.tsx",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\dialogue-soul-search\\src\\components\\FileUploadPage.tsx",
               "RelativeDocumentMoniker": "src\\components\\FileUploadPage.tsx",
               "ToolTip": "C:\\Users\\User\\source\\repos\\dialogue-soul-search\\src\\components\\FileUploadPage.tsx",
               "RelativeToolTip": "src\\components\\FileUploadPage.tsx",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAGAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABAAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
               "WhenOpened": "2025-05-22T14:04:12.658Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "AnalysisPage.tsx",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\dialogue-soul-search\\src\\components\\AnalysisPage.tsx",
               "RelativeDocumentMoniker": "src\\components\\AnalysisPage.tsx",
@@ -166,7 +183,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "UserInfoPage.tsx",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\dialogue-soul-search\\src\\components\\UserInfoPage.tsx",
               "RelativeDocumentMoniker": "src\\components\\UserInfoPage.tsx",
@@ -178,7 +195,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "App.tsx",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\dialogue-soul-search\\src\\App.tsx",
               "RelativeDocumentMoniker": "src\\App.tsx",
@@ -191,7 +208,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "tailwind.config.js",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\dialogue-soul-search\\tailwind.config.js",
               "RelativeDocumentMoniker": "tailwind.config.js",
@@ -203,7 +220,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "UploadPage.tsx",
               "DocumentMoniker": "C:\\Users\\User\\source\\repos\\dialogue-soul-search\\src\\pages\\UploadPage.tsx",
               "RelativeDocumentMoniker": "src\\pages\\UploadPage.tsx",

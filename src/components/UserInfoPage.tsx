@@ -1,189 +1,3 @@
-
-// import React from 'react';
-// import { Button } from "@/components/ui/button";
-// import { Card } from "@/components/ui/card";
-// import { Input } from "@/components/ui/input";
-// import { Label } from "@/components/ui/label";
-// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-// import { useApp } from '@/contexts/AppContext';
-// import { ChevronLeft } from 'lucide-react';
-// import { useToast } from '@/components/ui/use-toast';
-
-// const mbtiOptions = [
-//   'ISTJ', 'ISFJ', 'INFJ', 'INTJ',
-//   'ISTP', 'ISFP', 'INFP', 'INTP',
-//   'ESTP', 'ESFP', 'ENFP', 'ENTP',
-//   'ESTJ', 'ESFJ', 'ENFJ', 'ENTJ'
-// ];
-
-// const UserInfoPage: React.FC = () => {
-//   const { state, setUserInfo, goToStep, startAnalysis } = useApp();
-//   const { toast } = useToast();
-  
-//   const handleSubmit = (e: React.FormEvent) => {
-//     e.preventDefault();
-    
-//     // Validate user names (required)
-//     if (!state.userInfo.user.name.trim()) {
-//       toast({
-//         title: "입력 오류",
-//         description: "사용자 이름을 입력해주세요.",
-//         variant: "destructive",
-//       });
-//       return;
-//     }
-    
-//     if (!state.userInfo.partner.name.trim()) {
-//       toast({
-//         title: "입력 오류",
-//         description: "상대방 이름을 입력해주세요.",
-//         variant: "destructive",
-//       });
-//       return;
-//     }
-    
-//     // Start the analysis
-//     startAnalysis();
-//   };
-
-//   return (
-//     <div className="flex flex-col items-center justify-center min-h-screen p-4 animate-fade-in">
-//       <Card className="w-full max-w-md p-6 shadow-card">
-//         <div className="flex items-center mb-6">
-//           <Button 
-//             variant="ghost" 
-//             size="icon"
-//             onClick={() => goToStep('upload')}
-//             className="mr-2"
-//           >
-//             <ChevronLeft className="h-5 w-5" />
-//           </Button>
-//           <h1 className="text-2xl font-bold">사용자 정보 입력</h1>
-//         </div>
-        
-//         <form onSubmit={handleSubmit}>
-//           <div className="space-y-6">
-//             {/* User Section */}
-//             <div className="bg-blue-50 p-4 rounded-lg">
-//               <h2 className="text-lg font-medium mb-3 text-blue-800">나의 정보</h2>
-              
-//               <div className="space-y-3">
-//                 <div>
-//                   <Label htmlFor="userName">이름 (필수)</Label>
-//                   <Input
-//                     id="userName"
-//                     placeholder="사용자 이름"
-//                     value={state.userInfo.user.name}
-//                     onChange={(e) => setUserInfo('user', { name: e.target.value })}
-//                     required
-//                   />
-//                 </div>
-                
-//                 <div className="grid grid-cols-2 gap-3">
-//                   <div>
-//                     <Label htmlFor="userMbti">MBTI (선택)</Label>
-//                     <Select
-//                       value={state.userInfo.user.mbti || ""}
-//                       onValueChange={(value) => setUserInfo('user', { mbti: value })}
-//                     >
-//                       <SelectTrigger>
-//                         <SelectValue placeholder="선택" />
-//                       </SelectTrigger>
-//                       <SelectContent>
-//                         <SelectItem value="none">선택 안함</SelectItem>
-//                         {mbtiOptions.map((option) => (
-//                           <SelectItem key={option} value={option}>{option}</SelectItem>
-//                         ))}
-//                       </SelectContent>
-//                     </Select>
-//                   </div>
-                  
-//                   <div>
-//                     <Label htmlFor="userGender">성별 (선택)</Label>
-//                     <Select
-//                       value={state.userInfo.user.gender || ""}
-//                       onValueChange={(value: any) => setUserInfo('user', { gender: value })}
-//                     >
-//                       <SelectTrigger>
-//                         <SelectValue placeholder="선택" />
-//                       </SelectTrigger>
-//                       <SelectContent>
-//                         <SelectItem value="none">선택 안함</SelectItem>
-//                         <SelectItem value="male">남성</SelectItem>
-//                         <SelectItem value="female">여성</SelectItem>
-//                       </SelectContent>
-//                     </Select>
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-            
-//             {/* Partner Section */}
-//             <div className="bg-purple-50 p-4 rounded-lg">
-//               <h2 className="text-lg font-medium mb-3 text-purple-800">상대방 정보</h2>
-              
-//               <div className="space-y-3">
-//                 <div>
-//                   <Label htmlFor="partnerName">이름 (필수)</Label>
-//                   <Input
-//                     id="partnerName"
-//                     placeholder="상대방 이름"
-//                     value={state.userInfo.partner.name}
-//                     onChange={(e) => setUserInfo('partner', { name: e.target.value })}
-//                     required
-//                   />
-//                 </div>
-                
-//                 <div className="grid grid-cols-2 gap-3">
-//                   <div>
-//                     <Label htmlFor="partnerMbti">MBTI (선택)</Label>
-//                     <Select
-//                       value={state.userInfo.partner.mbti || ""}
-//                       onValueChange={(value) => setUserInfo('partner', { mbti: value })}
-//                     >
-//                       <SelectTrigger>
-//                         <SelectValue placeholder="선택" />
-//                       </SelectTrigger>
-//                       <SelectContent>
-//                         <SelectItem value="none">선택 안함</SelectItem>
-//                         {mbtiOptions.map((option) => (
-//                           <SelectItem key={option} value={option}>{option}</SelectItem>
-//                         ))}
-//                       </SelectContent>
-//                     </Select>
-//                   </div>
-                  
-//                   <div>
-//                     <Label htmlFor="partnerGender">성별 (선택)</Label>
-//                     <Select
-//                       value={state.userInfo.partner.gender || ""}
-//                       onValueChange={(value: any) => setUserInfo('partner', { gender: value })}
-//                     >
-//                       <SelectTrigger>
-//                         <SelectValue placeholder="선택" />
-//                       </SelectTrigger>
-//                       <SelectContent>
-//                         <SelectItem value="none">선택 안함</SelectItem>
-//                         <SelectItem value="male">남성</SelectItem>
-//                         <SelectItem value="female">여성</SelectItem>
-//                       </SelectContent>
-//                     </Select>
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-            
-//             <Button type="submit" className="w-full" disabled={state.isAnalyzing}>
-//               {state.isAnalyzing ? '분석중...' : '분석하기'}
-//             </Button>
-//           </div>
-//         </form>
-//       </Card>
-//     </div>
-//   );
-// };
-
-// export default UserInfoPage;
 import React, { useEffect, useState } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
@@ -263,128 +77,99 @@ const UserInfoPage: React.FC<Props> = ({ uploadedFile }) => {
             className="min-h-screen flex items-center justify-center bg-[#FFF7F5] font-sans"
             style={{ fontFamily: '"Noto Sans KR", sans-serif' }}
         >
-            {selected ? (               
-            
-            <div className="bg-white p-8 rounded-2xl shadow-lg w-[400px]">
-                <div className="flex items-center mb-6">
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  onClick={() => goToStep('upload')}
-                  className="mr-2"
-                >
-                  <ChevronLeft className="h-5 w-5" />
-                </Button>
-                    <h2 className="text-xl font-bold">사용자 정보 입력</h2>
+            {selected ? (
+                <div className="flex flex-col items-center justify-center w-full px-4 py-10 bg-[#FFF7F5] min-h-screen font-sans">
+                    {/* 입력 폼 */}
+                    <div className="w-full max-w-lg bg-white shadow-md rounded-2xl p-8">
+                        <div className="text-center mb-6">
+                            <h1 className="text-2xl font-bold text-gray-800 mb-1">
+                                분석할 사용자 정보를 입력해주세요
+                            </h1>
+                            <p className="text-sm text-gray-500">
+                                개인 맞춤 분석을 위해 간단한 정보를 알려주세요 ✨
+                            </p>
+                        </div>
+
+                        {/* 나의 정보 */}
+                        <div className="bg-blue-50 rounded-xl p-4 mb-6">
+                            <h3 className="text-sm font-semibold text-blue-700 mb-2">나의 정보</h3>
+                            <label className="block text-xs font-semibold mb-1">이름 (필수)</label>
+                            <input
+                                type="text"
+                                value={selected}
+                                readOnly
+                                className="w-full mb-3 px-3 py-2 rounded border text-sm bg-white text-black"
+                            />
+                            <div className="flex gap-4">
+                                <div className="flex-1">
+                                    <label className="block text-xs font-semibold mb-1">MBTI (선택)</label>
+                                    <select value={myMbti} onChange={(e) => setMyMbti(e.target.value)} className="w-full px-3 py-2 rounded border text-sm bg-white text-black">
+                                        <option>선택</option>
+                                        {/* MBTI 목록 */}
+                                        {['INTJ', 'INTP', 'ENTJ', 'ENTP', 'INFJ', 'INFP', 'ENFJ', 'ENFP', 'ISTJ', 'ISFJ', 'ESTJ', 'ESFJ', 'ISTP', 'ISFP', 'ESTP', 'ESFP'].map(m => (
+                                            <option key={m}>{m}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="flex-1">
+                                    <label className="block text-xs font-semibold mb-1">성별 (선택)</label>
+                                    <select value={myGender} onChange={(e) => setMyGender(e.target.value)} className="w-full px-3 py-2 rounded border text-sm bg-white text-black">
+                                        <option>선택</option>
+                                        <option>남성</option>
+                                        <option>여성</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* 상대방 정보 */}
+                        <div className="bg-purple-50 rounded-xl p-4 mb-6">
+                            <h3 className="text-sm font-semibold text-purple-700 mb-2">상대방 정보</h3>
+                            <label className="block text-xs font-semibold mb-1">이름 (필수)</label>
+                            <input
+                                type="text"
+                                value={state.predictedSpeakers.find((name) => name !== selected)}
+                                readOnly
+                                className="w-full mb-3 px-3 py-2 rounded border text-sm bg-white text-black"
+                            />
+                            <div className="flex gap-4">
+                                <div className="flex-1">
+                                    <label className="block text-xs font-semibold mb-1">MBTI (선택)</label>
+                                    <select value={partnerMbti} onChange={(e) => setPartnerMbti(e.target.value)} className="w-full px-3 py-2 rounded border text-sm bg-white text-black">
+                                        <option>선택</option>
+                                        {['INTJ', 'INTP', 'ENTJ', 'ENTP', 'INFJ', 'INFP', 'ENFJ', 'ENFP', 'ISTJ', 'ISFJ', 'ESTJ', 'ESFJ', 'ISTP', 'ISFP', 'ESTP', 'ESFP'].map(m => (
+                                            <option key={m}>{m}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="flex-1">
+                                    <label className="block text-xs font-semibold mb-1">성별 (선택)</label>
+                                    <select value={partnerGender} onChange={(e) => setPartnerGender(e.target.value)} className="w-full px-3 py-2 rounded border text-sm bg-white text-black">
+                                        <option>선택</option>
+                                        <option>남성</option>
+                                        <option>여성</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button
+                            onClick={handleAnalyze}
+                            className="w-full py-2 rounded-full bg-pink-400 text-white font-semibold hover:bg-pink-500 transition"
+                        >
+                            {state.isAnalyzing ? '분석중...' : '📊 분석 시작하기'}
+                        </button>
+                    </div>
+
+                    {/* Toast 메시지 */}
+                    {showToast && (
+                        <div className="fixed bottom-4 right-4 bg-white border rounded-lg shadow-md px-4 py-2 text-sm text-gray-800 animate-fade-in">
+                            <p className="font-semibold">파일 업로드 성공</p>
+                            <p className="text-xs text-gray-500">파일이 성공적으로 업로드되었습니다.</p>
+                        </div>
+                    )}
                 </div>
 
-                {/* 나의 정보 */}
-                <div className="bg-blue-50 rounded-xl p-4 mb-4">
-                    <h3 className="text-sm font-semibold text-blue-700 mb-2">나의 정보</h3>
-                    <label className="block text-xs font-semibold mb-1">이름 (필수)</label>
-                    <input
-                        type="text"
-                        placeholder="사용자 이름"
-                        value={selected}
-                        //onChange={(e) => setMyName(e.target.value)}
-                        className="w-full mb-3 px-3 py-2 rounded border text-sm bg-white text-black"
-                        readOnly
-                    />
-                    <div className="flex gap-2">
-                        <div className="flex-1">
-                            <label className="block text-xs font-semibold mb-1">MBTI (선택)</label>
-                            <select value={myMbti} onChange={(e) => setMyMbti(e.target.value)} className="w-full px-3 py-2 rounded border text-sm bg-white text-black">
-                                <option>선택</option>
-                                <option>INTJ</option>
-                                <option>INTP</option>
-                                <option>ENTJ</option>
-                                <option>ENTP</option>
-                                <option>INFJ</option>
-                                <option>INFP</option>
-                                <option>ENFJ</option>
-                                <option>ENFP</option>
-                                <option>ISTJ</option>
-                                <option>ISFJ</option>
-                                <option>ESTJ</option>
-                                <option>ESFJ</option>
-                                <option>ISTP</option>
-                                <option>ISFP</option>
-                                <option>ESTP</option>
-                                <option>ESFP</option>
-                            </select>
-                        </div>
-                        <div className="flex-1">
-                            <label className="block text-xs font-semibold mb-1">성별 (선택)</label>
-                            <select value={myGender} onChange={(e) => setMyGender(e.target.value)} className="w-full px-3 py-2 rounded border text-sm bg-white text-black">
-                                <option>선택</option>
-                                <option>남성</option>
-                                <option>여성</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                {/* 상대방 정보 */}
-                <div className="bg-purple-50 rounded-xl p-4 mb-6">
-                    <h3 className="text-sm font-semibold text-purple-700 mb-2">상대방 정보</h3>
-                    <label className="block text-xs font-semibold mb-1">이름 (필수)</label>
-                    <input
-                        type="text"
-                        placeholder="상대방 이름"
-                        value={state.predictedSpeakers.find((name) => name !== selected)}
-                        //onChange={(e) => setPartnerName(e.target.value)}
-                        readOnly
-                        className="w-full mb-3 px-3 py-2 rounded border text-sm bg-white text-black"
-                    />
-                    <div className="flex gap-2">
-                        <div className="flex-1">
-                            <label className="block text-xs font-semibold mb-1">MBTI (선택)</label>
-                            <select value={partnerMbti} onChange={(e) => setPartnerMbti(e.target.value)} className="w-full px-3 py-2 rounded border text-sm bg-white text-black">
-                                <option>선택</option>
-                                <option>INTJ</option>
-                                <option>INTP</option>
-                                <option>ENTJ</option>
-                                <option>ENTP</option>
-                                <option>INFJ</option>
-                                <option>INFP</option>
-                                <option>ENFJ</option>
-                                <option>ENFP</option>
-                                <option>ISTJ</option>
-                                <option>ISFJ</option>
-                                <option>ESTJ</option>
-                                <option>ESFJ</option>
-                                <option>ISTP</option>
-                                <option>ISFP</option>
-                                <option>ESTP</option>
-                                <option>ESFP</option>
-                            </select>
-                        </div>
-                        <div className="flex-1">
-                            <label className="block text-xs font-semibold mb-1">성별 (선택)</label>
-                            <select value={partnerGender} onChange={(e) => setPartnerGender(e.target.value)} className="w-full px-3 py-2 rounded border text-sm bg-white text-black">
-                                <option>선택</option>
-                                <option>남성</option>
-                                <option>여성</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <button
-                    onClick={handleAnalyze}
-                    className="w-full py-2 rounded-full bg-pink-400 text-white font-semibold hover:bg-pink-500 transition"
-                >
-                    {state.isAnalyzing ? '분석중...' : '분석하기'}
-                </button>
-
-                {/* Toast 메시지 */}
-                {showToast && (
-                    <div className="fixed bottom-4 right-4 bg-white border rounded-lg shadow-md px-4 py-2 text-sm text-gray-800 animate-fade-in">
-                        <p className="font-semibold">파일 업로드 성공</p>
-                        <p className="text-xs text-gray-500">파일이 성공적으로 업로드되었습니다.</p>
-                    </div>
-                )}
-            </div>
             ) : (
             <div className="relative min-h-screen from-indigo-500 to-purple-600 flex flex-col">
             {/* 배경 장식 */}
