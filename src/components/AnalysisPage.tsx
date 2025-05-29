@@ -62,7 +62,7 @@ const AnalysisPage: React.FC = () => {
           className="w-full"
         >
           <div className="rounded-lg p-4 mb-6 shadow-lg overflow-x-auto">
-            <TabsList className="grid grid-cols-2 md:grid-cols-5 gap-2">
+            <TabsList className="grid grid-cols-5 gap-2 !overflow-visible" >
               <TabsTrigger value="personality" className="flex items-center gap-2">
                 <Brain className="h-4 w-4" /> <span className="hidden md:inline">성향 분석</span><span className="md:hidden">성향</span>
               </TabsTrigger>
