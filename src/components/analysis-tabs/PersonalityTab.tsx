@@ -1,5 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { useApp } from '@/contexts/AppContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
@@ -11,6 +12,8 @@ const allTraits = ['친근함', '유머러스', '솔직함', '공감적', '논�
 const PersonalityTab: React.FC = () => {
   const { state } = useApp();
   const data = state.analysisData!;
+  const predict = data.mbti_prediction.predict;
+  const predictedAnalysis = data.chemistry_analysis.find(item => item.analysis_type === "predicted");
 
   const { user, partner } = state.userInfo;
   //Tone
@@ -31,6 +34,21 @@ const PersonalityTab: React.FC = () => {
       setSelectedEmotions(selectedEmotions.filter(e => e !== emotion));
     } else {
       setSelectedEmotions([...selectedEmotions, emotion]);
+    }
+  };
+
+  const getGradientStyle = (value, speaker) => {
+    const intensity = Math.max(0.1, value / 100);
+    if (speaker === user.name) {
+      return {
+        background: `linear-gradient(135deg, rgba(99, 102, 241, ${intensity}) 0%, rgba(168, 85, 247, ${intensity * 0.8}) 100%)`,
+        boxShadow: `0 4px 20px rgba(99, 102, 241, ${intensity * 0.3})`
+      };
+    } else {
+      return {
+        background: `linear-gradient(135deg, rgba(16, 185, 129, ${intensity}) 0%, rgba(5, 150, 105, ${intensity * 0.8}) 100%)`,
+        boxShadow: `0 4px 20px rgba(16, 185, 129, ${intensity * 0.3})`
+      };
     }
   };
 
@@ -159,76 +177,79 @@ const getCompatibilityComment = (my: string, partner: string): string => {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6">성향 분석</h2>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        {/* <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">MBTI 예측</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-5 gap-4 items-center">
-              <div className="col-span-2 bg-blue-50 p-3 rounded-lg text-center">
-                <p className="text-xs text-gray-500 mb-1">{user.name}</p>
-                <div className="text-lg font-bold text-blue-700">{state.userInfo.user.mbti}</div>
-              </div>
-
-              <div className="col-span-3 bg-purple-50 p-4 rounded-lg text-center shadow-sm">
-                <p className="text-sm text-gray-500 mb-1">{partner.name}</p>
-                <div className="text-3xl font-bold text-purple-700 mb-1">{data.mbti_prediction.type}</div>
-                <p className="text-xs text-gray-600">정확도 {data.mbti_prediction.confidence}</p>
-              </div>
-            </div>
-
-            <div className="mt-4 p-3 bg-gray-50 rounded-lg text-sm text-gray-700">
-              {data.mbti_prediction.mbti_comments}
-            </div>
-          </CardContent>
-        </Card> */}
+      <h2 className="text-2xl font-bold mb-6">성향 분석</h2>      
+      <div className="grid grid-cols-1 gap-6 mb-6">
         <Card>
-      <CardHeader>
-        <CardTitle className="text-lg">MBTI 예측</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="bg-gray-100 p-4 rounded-lg mb-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="text-center">
-              <div className="text-sm text-gray-500 mb-1">{user.name}의 MBTI</div>
-              <div className="text-xl font-bold text-indigo-600">{user.mbti}</div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <CardHeader>
+              <CardTitle className="text-lg">선택한 MBTI</CardTitle>
+            </CardHeader>
+            <CardHeader>
+              <CardTitle className="text-lg">분석한 MBTI</CardTitle>
+            </CardHeader>
+          </div>          
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-2 items-stretch">
+              <div className="bg-white/70 backdrop-blur-sm rounded-3xl border border-white/50 shadow-lg p-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-center">
+                    <div className="text-sm text-gray-500 mb-2">{user.name}의 MBTI</div>
+                    {/* <div className="text-xl font-bold text-indigo-600">{user.mbti}</div> */}
+                    <div 
+                      className="className=group/item relative overflow-hidden rounded-2xl transition-all duration-300 hover:scale-105 hover:-translate-y-1 cursor-pointer"
+                      style={getGradientStyle(50, user.name)}
+                      >
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
+                      <div className="relative p-6 text-center text-2xl font-bold">{user.mbti}</div>
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-sm text-gray-500 mb-2">{partner.name}의 MBTI</div>
+                    <div 
+                      className="className=group/item relative overflow-hidden rounded-2xl transition-all duration-300 hover:scale-105 hover:-translate-y-1 cursor-pointer"
+                      style={getGradientStyle(40, partner.name)}
+                      >
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
+                      <div className="relative p-6 text-center text-2xl font-bold">{partner.mbti}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="">                
+                <div className="relative flex flex-col justify-between h-full bg-white/70 backdrop-blur-sm rounded-3xl shadow-lg border border-white/50 p-4 text-center">
+                  <div className="absolute top-4 right-4">
+                    <div className="text-white px-3 py-1 rounded-full text-xs font-semibold shadow" style={getGradientStyle(80, user.name)}>
+                      정확도 {predict.confidence}
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1 items-center justify-center flex-grow">
+                    <div className="text-indigo-700 font-semibold text-sm">
+                      {predictedAnalysis.character_info.partner.type}
+                    </div>
+                    <div className="text-4xl font-bold text-indigo-500">
+                      {predict.type}
+                    </div>
+                    <div className={`text-sm font-medium ${partner.mbti === predict.type ? 'text-emerald-700' : 'text-red-500'}`}>
+                      {partner.mbti === predict.type ? '✓ 입력값과 일치' : '⚠️ 입력한 MBTI와 차이가 있어요'}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="text-center">
-              <div className="text-sm text-gray-500 mb-1">{partner.name}의 MBTI</div>
-              <div className="text-xl font-bold text-indigo-600">{partner.mbti}</div>
-            </div>
-          </div>
-        </div>
-
-        <div className="mb-6">
+        </CardContent>
+        
+        <CardHeader>
+          <CardTitle className="text-lg">MBTI 케미 분석</CardTitle>
+        </CardHeader>
+        <CardContent>       
+        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-4 rounded-3xl shadow-lg">
           <div className="flex justify-between items-center mb-2">
-            <h4 className="font-semibold text-gray-800">분석 결과</h4>
-            <div className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-medium">
-              정확도 {data.mbti_prediction.confidence}
-            </div>
-          </div>
-          <div className="bg-white border-2 border-indigo-500 rounded-lg p-4 text-center mb-4">
-            <div className="text-sm text-gray-500">{partner.name}의 예측 MBTI</div>
-            <div className="text-2xl font-bold text-indigo-700">{data.mbti_prediction.type}</div>
-            <div className={`text-sm font-medium ${partner.mbti ==  data.mbti_prediction.type? 'text-green-600' : 'text-red-500'}`}>
-              {partner.mbti ==  data.mbti_prediction.type ? '✓ 입력값과 일치' : '입력값과 다름'}
-            </div>
-          </div>
-          <div className="bg-gray-50 p-4 rounded-md text-sm text-gray-700">
-            {data.mbti_prediction.mbti_comments}
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-4 rounded-lg">
-          <div className="flex justify-between items-center mb-2">
-            <div className="font-semibold">{user.mbti} ♥ {data.mbti_prediction.type} 궁합</div>
-            <div className="text-xl font-bold">{getCompatibilityPercentage(user.mbti, data.mbti_prediction.type)}</div>
+            <div className="text-xl font-bold">{predictedAnalysis.score_summary.replace(/\*\*/g, "")}</div>
           </div>
           <div className="text-sm opacity-90">
-            {getCompatibilityComment(user.mbti, data.mbti_prediction.type)}
+          {/* <ReactMarkdown>{predictedAnalysis.score_summary}</ReactMarkdown> <br></br> */}
+          <ReactMarkdown>{predictedAnalysis.chemistry_description}</ReactMarkdown> <br></br>
+          <ReactMarkdown>{predictedAnalysis.warning_signal}</ReactMarkdown>
           </div>
         </div>
       </CardContent>
@@ -240,7 +261,7 @@ const getCompatibilityComment = (my: string, partner: string): string => {
             <CardTitle className="text-lg">말투 분석</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <h3 className="font-medium text-blue-700">{user.name}</h3>
                 <div className="flex flex-wrap gap-2">

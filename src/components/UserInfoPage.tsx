@@ -74,11 +74,11 @@ const UserInfoPage: React.FC<Props> = ({ uploadedFile }) => {
 
     return (
         <div
-            className="min-h-screen flex items-center justify-center bg-[#FFF7F5] font-sans"
+            className="flex items-center justify-center bg-[#FFF7F5] font-sans"
             style={{ fontFamily: '"Noto Sans KR", sans-serif' }}
         >
             {selected ? (
-                <div className="flex flex-col items-center justify-center w-full px-4 py-10 bg-[#FFF7F5] min-h-screen font-sans">
+                <div className="flex flex-col items-center justify-center w-full px-4 py-10 bg-[#FFF7F5] font-sans">
                     {/* 입력 폼 */}
                     <div className="w-full max-w-lg bg-white shadow-md rounded-2xl p-8">
                         <div className="text-center mb-6">
@@ -171,7 +171,7 @@ const UserInfoPage: React.FC<Props> = ({ uploadedFile }) => {
                 </div>
 
             ) : (
-            <div className="relative min-h-screen from-indigo-500 to-purple-600 flex flex-col">
+            <div className="relative from-indigo-500 to-purple-600 flex flex-col">
             {/* 배경 장식 */}
             <div className="absolute inset-0 overflow-hidden z-0">
                 <div className="absolute w-20 h-20 bg-white/10 rounded-full top-1/5 left-1/10 animate-float1" />
@@ -225,6 +225,14 @@ const UserInfoPage: React.FC<Props> = ({ uploadedFile }) => {
             </div>
         )
         }
+        {state.isAnalyzing && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#FFF7F5]">
+                <div className="flex flex-col items-center">
+                    <img src="/loading.gif" alt="분석중..." className="" />
+                    <div className="text-gray-600 text-sm animate-pulse">감정 분석 중이에요...</div>
+                </div>
+            </div>
+        )}
         </div>
     );
 };

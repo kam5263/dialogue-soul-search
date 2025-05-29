@@ -14,12 +14,50 @@ export type TimeLabel =
   | "밤(18~00시)";
 
 export interface AnalysisData {
+  profile: {
+    user_name: string;
+    user_mbti: string;
+    partner_name: string;
+    partner_mbti: string;
+  };
   // Personality analysis
   mbti_prediction: {
-    confidence: string;
-    type: string;
-    mbti_comments: string;
+    original: {
+      type: string;
+      confidence: string;
+      mbti_comments: string;
+    };
+    predict: {
+      type: string;
+      confidence: string;
+      mbti_comments: string;
+    }
   };
+  // MBTI 심층분석
+  chemistry_analysis: [{
+    title: string;
+    analysis_type: string;
+    partner_mbti: string;
+    chemistry_score: number;
+    chemistry_description: string;
+    score_summary: string;
+    warning_signal: string;
+    character_info: {
+      user: {
+        animal: string;
+        type: string; 
+        traits: string[];
+        keywords: string[];
+      };
+      partner: {
+        animal: string;
+        type: string; 
+        traits: string[];
+        keywords: string[];
+      };
+    };
+  }];  
+  // Tone analysis
   conversational_tone: {
     user: string;
     partner: string;

@@ -28,7 +28,7 @@ const AnalysisPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8 animate-fade-in">
+    <div className="min-h-screen bg-white p-4 md:p-6 lg:p-8 animate-fade-in">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
           <div>
@@ -61,7 +61,7 @@ const AnalysisPage: React.FC = () => {
           onValueChange={handleTabChange}
           className="w-full"
         >
-          <div className="bg-white rounded-lg p-4 mb-6 shadow-sm overflow-x-auto">
+          <div className="rounded-lg p-4 mb-6 shadow-lg overflow-x-auto">
             <TabsList className="grid grid-cols-2 md:grid-cols-5 gap-2">
               <TabsTrigger value="personality" className="flex items-center gap-2">
                 <Brain className="h-4 w-4" /> <span className="hidden md:inline">성향 분석</span><span className="md:hidden">성향</span>

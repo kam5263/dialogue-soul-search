@@ -211,11 +211,7 @@ const AffinityTab: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="mb-4 bg-white/70 backdrop-blur-sm rounded-3xl shadow-xl border border-white/50 p-8 transition-all duration-300 hover:shadow-2xl hover:scale-105">
-            <p className="text-sm text-gray-500 mb-6">
-              밀당 지수는 대화에서 주도권과 적극성을 나타냅니다. 
-              높은 값은 대화를 주도하고 먼저 시작하는 경향을, 낮은 값은 반응하는 경향을 의미합니다.
-            </p>
-            
+
             {/* Tug of war visualization with avatars on the sides */}
             <div className="relative my-8">
               {/* User side (left) */}

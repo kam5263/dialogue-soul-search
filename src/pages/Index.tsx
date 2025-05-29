@@ -34,12 +34,21 @@ const AppContent = () => {
   }
 };
 
+const Layout = () => {
+  const { state } = useApp();
+
+  return (
+    <div className="flex flex-col font-sans">
+      <Header />
+      <AppContent />
+    </div>
+  );
+};
 // Main index component with context provider
 const Index = () => {
   return (
     <AppProvider>
-      <Header />
-      <AppContent />
+      <Layout />
     </AppProvider>
   );
 };

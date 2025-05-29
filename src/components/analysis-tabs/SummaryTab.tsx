@@ -84,11 +84,11 @@ const SummaryTab: React.FC = () => {
       {/* Action Plan */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">맞춤형 액션 플랜</CardTitle>
+          <CardTitle className="text-lg">🌟 레벨업 액션 플랜</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-gray-500 mb-4">
-            {user.name}님과 {partner.name}님의 관계를 개선하기 위한 구체적인 실천 계획입니다.
+            {user.name}님과 {partner.name}님의 관계 개선을 위한 구체적인 액션 플랜입니다.
           </p>
           
           <div className="space-y-3">
