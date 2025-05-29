@@ -45,7 +45,7 @@ const AnalysisPage: React.FC = () => {
                 대화 분석 결과
               </h1>
             </div>
-            <p className="text-gray-500 mt-1">
+            <p className="text-gray-500 mt-1" style={{marginLeft: "48px"}}>
               {state.userInfo.user.name}님과 {state.userInfo.partner.name}님의 대화 분석 결과입니다.
             </p>
           </div>
