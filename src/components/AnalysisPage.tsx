@@ -50,7 +50,10 @@ const AnalysisPage: React.FC = () => {
             </p>
           </div>
           
-          <Button variant="outline" onClick={resetApp}>
+          <Button
+            onClick={resetApp}
+            className="bg-[#FFF7F5] text-black border border-[#FFDACF] rounded-full text-sm font-medium px-4 py-2 hover:bg-[#ffeae4] transition"
+          >
             새 분석 시작하기
           </Button>
         </div>
