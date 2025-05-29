@@ -38,9 +38,13 @@ const Layout = () => {
   const { state } = useApp();
 
   return (
-    <div className="flex flex-col font-sans">
+    <div className="flex flex-col min-h-screen font-sans">
       <Header />
-      <AppContent />
+      <div className="flex-1 flex items-center">
+        <div className="w-full">
+          <AppContent />
+        </div>
+      </div>
     </div>
   );
 };

@@ -39,7 +39,7 @@ const FileUploadPage: React.FC = () => {
     };
 
     return (
-        <div className="flex items-center justify-center bg-[#FFF7F5] font-sans px-4">
+        <div className="min-h-screen flex items-center justify-center bg-[#FFF7F5] font-sans px-4">
             <div className="bg-white p-10 rounded-2xl shadow-xl w-full max-w-xl text-center">
                 {/* 제목 */}
                 <h1 className="text-pink-600 text-3xl font-bold mb-1">

@@ -78,7 +78,7 @@ const UserInfoPage: React.FC<Props> = ({ uploadedFile }) => {
             style={{ fontFamily: '"Noto Sans KR", sans-serif' }}
         >
             {selected ? (
-                <div className="flex flex-col items-center justify-center w-full px-4 py-10 bg-[#FFF7F5] font-sans">
+                <div className="min-h-screen flex flex-col items-center justify-center w-full px-4 py-10 bg-[#FFF7F5] font-sans">
                     {/* 입력 폼 */}
                     <div className="w-full max-w-lg bg-white shadow-md rounded-2xl p-8">
                         <div className="text-center mb-6">
@@ -180,7 +180,7 @@ const UserInfoPage: React.FC<Props> = ({ uploadedFile }) => {
             </div>
 
             {/* 본문 */}
-            <main className="relative z-10 flex-1 flex items-center justify-center px-4">
+            <main className="min-h-screen relative z-10 flex-1 flex items-center justify-center px-4">
                 <div className="bg-white/90 backdrop-blur border border-white/30 shadow-xl rounded-3xl p-10 max-w-md w-full text-center animate-fadeIn">
                 <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-600 mb-8">
                     당신의 이름을 선택해주세요!
