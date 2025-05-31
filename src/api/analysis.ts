@@ -30,8 +30,8 @@ export const fetchTopic = async (id: number) => {
 };
 
 export const fetchLLM = async (id: number) => {
-  //const response = await fetch(DOMAIN + `/analyze-mbti/` + id);
-  const response = await fetch(DOMAIN + `/llm/sample`);
+  const response = await fetch(DOMAIN + `/analyze-mbti/` + id);
+  //const response = await fetch(DOMAIN + `/llm/sample`);
   if (!response.ok) {
     throw new Error('Failed to fetch emotion analysis data');
   }
