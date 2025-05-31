@@ -141,10 +141,6 @@ export interface AnalysisData {
   
   likability_comments: string[];
   // Conversation pattern analysis
-  messageRatio: {
-    user: number;
-    partner: number;
-  };
   responseTime: {
     user: number;
     partner: number;

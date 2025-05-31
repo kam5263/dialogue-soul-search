@@ -177,19 +177,14 @@ const getCompatibilityComment = (my: string, partner: string): string => {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6">성향 분석</h2>      
-      <div className="grid grid-cols-1 gap-6 mb-6">
-        <Card>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* <h2 className="text-2xl font-bold mb-6">성향 분석</h2>       */}
+      <div className="grid grid-cols-1 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-lg">선택한 MBTI</CardTitle>
-            </CardHeader>
-            <CardHeader>
-              <CardTitle className="text-lg">분석한 MBTI</CardTitle>
-            </CardHeader>
-          </div>          
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-2 items-stretch">
+              <CardTitle className="text-2xl font-bold">😃 선택한 MBTI</CardTitle>
+            </CardHeader>        
+            <CardContent>
               <div className="bg-white/70 backdrop-blur-sm rounded-3xl border border-white/50 shadow-lg p-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="text-center">
@@ -214,91 +209,97 @@ const getCompatibilityComment = (my: string, partner: string): string => {
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="">                
-                <div className="relative flex flex-col justify-between h-full bg-white/70 backdrop-blur-sm rounded-3xl shadow-lg border border-white/50 p-4 text-center">
-                  <div className="absolute top-4 right-4">
-                    <div className="text-white px-3 py-1 rounded-full text-xs font-semibold shadow" style={getGradientStyle(80, user.name)}>
-                      정확도 {predict.confidence}
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-1 items-center justify-center flex-grow">
-                    <div className="text-indigo-700 font-semibold text-sm">
-                      {predictedAnalysis.character_info.partner.type}
-                    </div>
-                    <div className="text-4xl font-bold text-indigo-500">
-                      {predict.type}
-                    </div>
-                    <div className={`text-sm font-medium ${partner.mbti === predict.type ? 'text-emerald-700' : 'text-red-500'}`}>
-                      {partner.mbti === predict.type ? '✓ 입력값과 일치' : '⚠️ 입력한 MBTI와 차이가 있어요'}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-        </CardContent>
-        
-        <CardHeader>
-          <CardTitle className="text-lg">MBTI 케미 분석</CardTitle>
-        </CardHeader>
-        <CardContent>       
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-4 rounded-3xl shadow-lg">
-          <div className="flex justify-between items-center mb-2">
-            <div className="text-xl font-bold">{predictedAnalysis.score_summary.replace(/\*\*/g, "")}</div>
-          </div>
-          <div className="text-sm opacity-90">
-          {/* <ReactMarkdown>{predictedAnalysis.score_summary}</ReactMarkdown> <br></br> */}
-          <ReactMarkdown>{predictedAnalysis.chemistry_description}</ReactMarkdown> <br></br>
-          <ReactMarkdown>{predictedAnalysis.warning_signal}</ReactMarkdown>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-
-        {/* Speech Style Analysis Card - New format with badges */}
-        {<Card>
+              </div>  
+          </CardContent>
+        </Card>
+        <Card>
           <CardHeader>
-            <CardTitle className="text-lg">말투 분석</CardTitle>
+            <CardTitle className="text-2xl font-bold">😎 분석한 MBTI</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <h3 className="font-medium text-blue-700">{user.name}</h3>
-                <div className="flex flex-wrap gap-2">
-                  {speechTraits.user.map(trait => (
-                    <Badge 
-                      key={trait.trait}
-                      className={`px-3 py-1.5 ${
-                        trait.selected ? 'bg-blue-500 text-white' :                        
-                        'bg-blue-100 text-blue-600'
-                      } text-${getTraitBadgeSize(trait.selected)}`}
-                    >
-                      {trait.trait}
-                    </Badge>
-                  ))}
+            <div className="relative flex flex-col justify-between h-full bg-white/70 backdrop-blur-sm rounded-3xl shadow-lg border border-white/50 p-8 text-center">
+              <div className="absolute top-4 right-4">
+                <div className="text-white px-3 py-1 rounded-full text-xs font-semibold shadow" style={getGradientStyle(80, user.name)}>
+                  정확도 {predict.confidence}
                 </div>
               </div>
-              
-              <div className="space-y-4">
-                <h3 className="font-medium text-purple-700">{partner.name}</h3>
-                <div className="flex flex-wrap gap-2">
-                  {speechTraits.partner.map(trait => (
-                    <Badge 
-                      key={trait.trait}
-                      className={`px-3 py-1.5 ${
-                        trait.selected ? 'bg-purple-500 text-white' : 
-                        'bg-purple-100 text-purple-600'
-                      } text-${getTraitBadgeSize(trait.selected)}`}
-                    >
-                      {trait.trait}
-                    </Badge>
-                  ))}
+              <div className="flex flex-col gap-1 items-center justify-center flex-grow">
+                <div className="text-indigo-700 font-semibold text-sm">
+                  {predictedAnalysis.character_info.partner.type}
+                </div>
+                <div className="text-4xl font-bold text-indigo-500 mb-1">
+                  {predict.type}
+                </div>
+                <div className={`text-sm font-medium ${partner.mbti === predict.type ? 'text-emerald-700' : 'text-red-500'}`}>
+                  {partner.mbti === predict.type ? '✓ 입력값과 일치' : '⚠️ 입력한 MBTI와 차이가 있어요'}
                 </div>
               </div>
             </div>
           </CardContent>
-        </Card>}
+      </Card>
+    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold">💞 MBTI 케미 분석</CardTitle>
+      </CardHeader>
+      <CardContent>       
+        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-4 rounded-3xl shadow-lg">
+          <div className="flex justify-between items-center mb-2">
+            <div className="text-xl font-bold">{predictedAnalysis.score_summary.replace(/\*\*/g, "")}</div>
+          </div>
+        <div className="text-sm opacity-90">
+        {/* <ReactMarkdown>{predictedAnalysis.score_summary}</ReactMarkdown> <br></br> */}
+        <ReactMarkdown>{predictedAnalysis.chemistry_description}</ReactMarkdown> <br></br>
+        <ReactMarkdown>{predictedAnalysis.warning_signal}</ReactMarkdown>
+        </div>
       </div>
+      </CardContent>
+    </Card>
+
+    {/* Speech Style Analysis Card - New format with badges */}
+    {<Card>
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold">📣 말투 분석</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <h3 className="text-sm text-gray-500">{user.name}</h3>
+            <div className="flex flex-wrap gap-2">
+              {speechTraits.user.map(trait => (
+                <Badge 
+                  key={trait.trait}
+                  className={`px-3 py-1.5 ${
+                    trait.selected ? 'bg-gradient-to-r from-indigo-500 to-indigo-600 text-white shadow-lg border border-indigo-400/50 transform scale-105' :                        
+                    'bg-gradient-to-r from-indigo-50 to-indigo-100/50 text-indigo-700 border border-indigo-200/50 hover:from-indigo-100 hover:to-indigo-150'
+                  } text-${getTraitBadgeSize(trait.selected)}`}
+                >
+                  {trait.trait}
+                </Badge>
+              ))}
+            </div>
+          </div>
+          
+          <div className="space-y-4">
+            <h3 className="text-sm text-gray-500">{partner.name}</h3>
+            <div className="flex flex-wrap gap-2">
+              {speechTraits.partner.map(trait => (
+                <Badge 
+                  key={trait.trait}
+                  className={`px-3 py-1.5 ${
+                    trait.selected ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg border border-emerald-400/50 transform scale-105' :                        
+                    'bg-gradient-to-r from-emerald-50 to-emerald-100/50 text-emerald-700 border border-emerald-200/50 hover:from-emerald-100 hover:to-emerald-150'
+                  } text-${getTraitBadgeSize(trait.selected)}`}
+                >
+                  {trait.trait}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>}
+  </div>
 
       {/* Spider Chart (Emotion Radar) */}
       {/* <Card className="mb-6">

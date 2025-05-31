@@ -21,12 +21,10 @@ const SummaryTab: React.FC = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6">맞춤형 솔루션</h2>
-      
       {/* Custom Solutions */}
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle className="text-lg">맞춤형 솔루션</CardTitle>
+          <CardTitle className="text-2xl font-bold">🎈 맞춤형 솔루션</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -36,7 +34,7 @@ const SummaryTab: React.FC = () => {
                   <Clock className="h-5 w-5 text-blue-600" />
                 </div>
                 <div>
-                  <h4 className="font-medium text-blue-800 mb-1">{solutions[0].title}</h4>
+                  <h4 className="text-blue-800 font-bold mb-1">{solutions[0].title}</h4>
                   <p className="text-sm">{solutions[0].content}</p>
                 </div>
               </div>
@@ -48,7 +46,7 @@ const SummaryTab: React.FC = () => {
                   <Target className="h-5 w-5 text-purple-600" />
                 </div>
                 <div>
-                  <h4 className="font-medium text-purple-800 mb-1">{solutions[1].title}</h4>
+                  <h4 className="text-purple-800 font-bold mb-1">{solutions[1].title}</h4>
                   <p className="text-sm">{solutions[1].content}</p>
                 </div>
               </div>
@@ -60,7 +58,7 @@ const SummaryTab: React.FC = () => {
                   <Lightbulb className="h-5 w-5 text-green-600" />
                 </div>
                 <div>
-                  <h4 className="font-medium text-green-800 mb-1">{solutions[2].title}</h4>
+                  <h4 className="text-green-800 font-bold mb-1">{solutions[2].title}</h4>
                   <p className="text-sm">{solutions[2].content}</p>
                 </div>
               </div>
@@ -72,7 +70,7 @@ const SummaryTab: React.FC = () => {
                   <MessageSquare className="h-5 w-5 text-amber-600" />
                 </div>
                 <div>
-                  <h4 className="font-medium text-amber-800 mb-1">{solutions[3].title}</h4>
+                  <h4 className="text-amber-800 font-bold mb-1">{solutions[3].title}</h4>
                   <p className="text-sm">{solutions[3].content}</p>
                 </div>
               </div>
@@ -84,7 +82,7 @@ const SummaryTab: React.FC = () => {
       {/* Action Plan */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">🌟 레벨업 액션 플랜</CardTitle>
+          <CardTitle className="text-2xl font-bold">🌟 레벨업 액션 플랜</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-gray-500 mb-4">
@@ -98,7 +96,7 @@ const SummaryTab: React.FC = () => {
                   <Check className="h-4 w-4" />
                 </div>
                 <div>
-                  <p className="flex-1">{action.title}</p>
+                  <p className="flex-1 font-bold">{action.title}</p>
                   <p className="text-sm flex-1">{action.content}</p>
                 </div>
               </div>

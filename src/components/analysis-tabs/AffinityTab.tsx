@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { User, UserRound, ArrowLeft, ArrowRight } from 'lucide-react';
-import { fetchMetrics } from '@/api/analysis';
 
 const AffinityTab: React.FC = () => {
   const { state } = useApp();
@@ -195,7 +194,7 @@ const AffinityTab: React.FC = () => {
     <div className="p-6">
       <Card className="mb-6">
         <CardHeader>
-          <h2 className="text-2xl font-bold mb-6">💖 호감도 분석</h2>
+          <h2 className="text-2xl font-bold">💖 호감도 분석</h2>
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-2 gap-8 mb-4">

@@ -90,7 +90,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setState((prev) => ({ ...prev, isAnalyzing: true }));
 
     const llmResult = await fetchLLM(id);
-    const pattern = await fetchMetrics(file_name);
+    const pattern = await fetchMetrics(id);
 
     const analysisData = {
       ...parseJsonData(llmResult.result),

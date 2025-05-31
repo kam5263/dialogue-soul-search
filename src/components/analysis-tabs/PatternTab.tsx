@@ -4,8 +4,6 @@ import { useApp } from '@/contexts/AppContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { Clock } from 'lucide-react';
-import { fetchMetrics } from '@/api/analysis';
-import classNames from "classnames";
 import type { TimeLabel } from '@/types/index.ts'
 
 const PatternTab: React.FC = () => {
@@ -14,11 +12,8 @@ const PatternTab: React.FC = () => {
   const { user, partner } = state.userInfo;
 
   // Prepare message ratio data for pie chart
-  const messageRatioData = [
-    { name: user.name, value: data.pattern.message_ratio[user.name] ?? 0 },
-    { name: partner.name, value: data.pattern.message_ratio[partner.name] ?? 0 }
-  ];
-
+  const userRatio = data.pattern.message_ratio[user.name];
+  const partnerRatio = data.pattern.message_ratio[partner.name];
   const userTime = data.pattern.avg_reply_time[user.name] ?? 0;
   const partnerTime = data.pattern.avg_reply_time[partner.name] ?? 0;
   
@@ -68,100 +63,163 @@ const PatternTab: React.FC = () => {
   
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6">대화 패턴 분석</h2>
-      
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         {/* Message Ratio Card */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">메시지 비율</CardTitle>
+            <CardTitle><h2 className="text-2xl font-bold">✉ 메시지 비율</h2></CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col items-center ">
-            <div className="h-64 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={messageRatioData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    paddingAngle={5}
-                    dataKey="value"
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  >
-                    {messageRatioData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(value) => `${value}%`} />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
+            <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl p-8">
+              {/* Main VS Container */}
+              <div className="relative bg-gradient-to-r from-indigo-500 to-emerald-500 rounded-2xl p-0.5 shadow-2xl">
+                <div className="flex items-center bg-white rounded-2xl overflow-hidden">
+                  
+                  {/* Left Side - Indigo */}
+                  <div className="flex-1 bg-gradient-to-br from-indigo-500 via-indigo-600 to-indigo-700 p-6 text-white relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+                    <div className="relative z-10 text-center">
+                      <div className="flex items-center justify-center mb-2">
+                        <span className="text-lg font-bold">{user.name}</span>
+                      </div>
+                      <div className="text-3xl font-black tracking-tight">{userRatio}%</div>
+                    </div>
+                    {/* Decorative elements */}
+                    <div className="absolute -top-4 -right-4 w-16 h-16 bg-white/5 rounded-full"></div>
+                    <div className="absolute -bottom-2 -left-2 w-8 h-8 bg-white/5 rounded-full"></div>
+                  </div>
+
+                  {/* VS Circle */}
+                  <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
+                    <div className="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center border-2 border-gray-100">
+                      <span className="text-gray-600 font-bold text-sm">VS</span>
+                    </div>
+                  </div>
+
+                  {/* Right Side - Emerald */}
+                  <div className="flex-1 bg-gradient-to-bl from-emerald-500 via-emerald-600 to-emerald-700 p-6 text-white relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-bl from-white/10 to-transparent"></div>
+                    <div className="relative z-10 text-center">
+                      <div className="flex items-center justify-center mb-2">
+                        <span className="text-lg font-bold">{partner.name}</span>
+                      </div>
+                      <div className="text-3xl font-black tracking-tight">{partnerRatio}%</div>
+                    </div>
+                    {/* Decorative elements */}
+                    <div className="absolute -top-4 -left-4 w-16 h-16 bg-white/5 rounded-full"></div>
+                    <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-white/5 rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Progress Bar Effect */}
+              <div className="mt-4 h-2 bg-gray-200 rounded-full overflow-hidden shadow-inner">
+                <div className="h-full bg-gradient-to-r from-indigo-500 to-emerald-500 rounded-full transition-all duration-1000 ease-out" 
+                    style={{width: '100%'}}></div>
+              </div>
+
+              {/* Animated particles effect */}
+              <div className="absolute inset-0 pointer-events-none">
+                <div className="absolute top-4 left-8 w-1 h-1 bg-indigo-300 rounded-full animate-pulse"></div>
+                <div className="absolute top-8 right-12 w-1 h-1 bg-emerald-300 rounded-full animate-pulse delay-300"></div>
+                <div className="absolute bottom-6 left-16 w-1 h-1 bg-indigo-400 rounded-full animate-pulse delay-700"></div>
+                <div className="absolute bottom-4 right-8 w-1 h-1 bg-emerald-400 rounded-full animate-pulse delay-1000"></div>
+              </div>
+
+              <div className="mt-4 text-center">
+                <p className="text-gray-500 text-sm">
+                  {user.name}님이 전체 대화의 <strong>{userRatio}%</strong>를,<br />
+                  {partner.name}님이 <strong>{partnerRatio}%</strong>를 차지하고 있습니다.
+                </p>
+              </div>
+            </div>         
             
-            <div className="mt-4 text-center">
-              <p className="text-gray-500 text-sm">
-                {user.name}님이 전체 대화의 <strong>{data.pattern.message_ratio[user.name]}%</strong>를,<br />
-                {partner.name}님이 <strong>{data.pattern.message_ratio[partner.name]}%</strong>를 차지하고 있습니다.
-              </p>
-            </div>
           </CardContent>
         </Card>
         
         {/* Response Time Card */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">평균 응답 시간</CardTitle>
+            <CardTitle><h2 className="text-2xl font-bold">⏰ 평균 응답 시간</h2></CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-6">
-              <div className="flex flex-col items-center">
-                <div className="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center mb-4">
-                  <div className="text-center">
-                    <Clock className="h-6 w-6 text-blue-600 mx-auto mb-1" />
-                    <span className="block text-xl font-bold text-blue-600">{userTime}분</span>
+            <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl p-8">
+        
+              {/* Response Time Grid */}
+              <div className="grid grid-cols-2 gap-6">
+                {/* Left Side - User (Indigo) */}
+                <div className="flex flex-col items-center">
+                  <div className="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-100 via-indigo-50 to-indigo-100 flex items-center justify-center mb-4 shadow-lg border border-indigo-200/50 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
+                    <div className="text-center relative z-10">
+                      <Clock className="h-6 w-6 text-indigo-600 mx-auto mb-1" />
+                      <span className="block text-xl font-black text-indigo-600 tracking-tight">{userTime}분</span>
+                    </div>
+                    {/* Decorative elements */}
+                    <div className="absolute -top-2 -right-2 w-8 h-8 bg-indigo-200/30 rounded-full"></div>
                   </div>
+                  <p className="text-sm text-center font-medium text-gray-700">{user.name}</p>
                 </div>
-                <p className="text-sm text-center">{user.name}</p>
+                
+                {/* Right Side - Partner (Emerald) */}
+                <div className="flex flex-col items-center">
+                  <div className="w-24 h-24 rounded-full bg-gradient-to-bl from-emerald-100 via-emerald-50 to-emerald-100 flex items-center justify-center mb-4 shadow-lg border border-emerald-200/50 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-bl from-white/20 to-transparent"></div>
+                    <div className="text-center relative z-10">
+                      <Clock className="h-6 w-6 text-emerald-600 mx-auto mb-1" />
+                      <span className="block text-xl font-black text-emerald-600 tracking-tight">{partnerTime}분</span>
+                    </div>
+                    {/* Decorative elements */}
+                    <div className="absolute -top-2 -left-2 w-8 h-8 bg-emerald-200/30 rounded-full"></div>
+                  </div>
+                  <p className="text-sm text-center font-medium text-gray-700">{partner.name}</p>
+                </div>
               </div>
               
-              <div className="flex flex-col items-center">
-                <div className="w-24 h-24 rounded-full bg-purple-100 flex items-center justify-center mb-4">
-                  <div className="text-center">
-                    <Clock className="h-6 w-6 text-purple-600 mx-auto mb-1" />
-                    <span className="block text-xl font-bold text-purple-600">{partnerTime}분</span>
+              {/* Analysis Section */}
+              <div className="pt-6 border-gray-100">                
+                {userTime < partnerTime ? (
+                  <div className="bg-gradient-to-r from-indigo-50 to-indigo-100/50 p-4 rounded-xl border border-indigo-200/50 relative overflow-hidden text-center">
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/30 to-transparent"></div>
+                    <p className="text-sm relative z-10 text-indigo-800 font-medium">
+                      {user.name}님이 {partner.name}님보다 평균 <span className="font-black text-indigo-700">{(partnerTime - userTime).toFixed(1)}분</span> 더 빠르게 <br></br>응답하고 있습니다.
+                    </p>
                   </div>
-                </div>
-                <p className="text-sm text-center">{partner.name}</p>
+                ) : userTime > partnerTime ? (
+                  <div className="bg-gradient-to-r from-emerald-50 to-emerald-100/50 p-4 rounded-xl border border-emerald-200/50 relative overflow-hidden text-center">
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/30 to-transparent"></div>
+                    <p className="text-sm relative z-10 text-emerald-800 font-medium">
+                      {partner.name}님이 {user.name}님보다 평균 <span className="font-black text-emerald-700">{(userTime - partnerTime).toFixed(1)}분</span> 더 빠르게 <br></br>응답하고 있습니다.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="bg-gradient-to-r from-gray-50 to-gray-100/50 p-4 rounded-xl border border-gray-200/50 relative overflow-hidden text-center">
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/30 to-transparent"></div>
+                    <p className="text-sm relative z-10 text-gray-800 font-medium">
+                      두 사람의 응답 시간이 유사하여 <span className="font-black text-gray-700">대화의 호흡이 잘 맞는</span> 것으로 보입니다.
+                    </p>
+                  </div>
+                )}
               </div>
-            </div>
-            
-            <div className="mt-6 pt-4 border-t">
-              <h4 className="font-medium text-sm mb-2">응답 패턴 분석</h4>
-              {userTime < partnerTime ? (
-                <p className="text-sm bg-blue-50 p-3 rounded">
-                  {user.name}님이 {partner.name}님보다 평균 {(partnerTime - userTime).toFixed(1)}분 더 빠르게 응답하고 있습니다.
-                </p>
-              ) : userTime > partnerTime ? (
-                <p className="text-sm bg-purple-50 p-3 rounded">
-                  {partner.name}님이 {user.name}님보다 평균 {(userTime - partnerTime).toFixed(1)}분 더 빠르게 응답하고 있습니다.
-                </p>
-              ) : (
-                <p className="text-sm bg-green-50 p-3 rounded">
-                  두 사람의 응답 시간이 유사하여 대화의 호흡이 잘 맞는 것으로 보입니다.
-                </p>
-              )}
 
+              {/* Animated particles effect */}
+              <div className="absolute inset-0 pointer-events-none">
+                <div className="absolute top-12 left-16 w-1 h-1 bg-indigo-300 rounded-full animate-pulse"></div>
+                <div className="absolute top-20 right-16 w-1 h-1 bg-emerald-300 rounded-full animate-pulse delay-300"></div>
+                <div className="absolute bottom-20 left-20 w-1 h-1 bg-indigo-400 rounded-full animate-pulse delay-700"></div>
+                <div className="absolute bottom-12 right-20 w-1 h-1 bg-emerald-400 rounded-full animate-pulse delay-1000"></div>
+              </div>
             </div>
           </CardContent>
         </Card>
+
+
       </div>
       
       {/* Time Distribution Chart */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">🕒 시간대별 활동 패턴 분석</CardTitle>
+          <CardTitle><h2 className="text-2xl font-bold">🕒 시간대별 활동 패턴 분석</h2></CardTitle>
         </CardHeader>
         <CardContent>
           {/* 메인 카드 */}

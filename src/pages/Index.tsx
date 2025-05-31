@@ -10,8 +10,11 @@ import AnalysisPage from '@/components/AnalysisPage';
 
 // 🧠 헤더 컴포넌트 추가
 const Header = () => {
+  const { resetApp } = useApp();
   return (
-<header className="p-2 text-sm text-gray-500 bg-gray-50 border-b border-gray-200">
+<header className="p-2 text-sm text-gray-500 bg-gray-50 border-b border-gray-200"
+  onClick={resetApp}
+>
   ❤️ Heart Insight
 </header>
 

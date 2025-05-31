@@ -12,16 +12,16 @@ export const fetchEmotionAnalysis = async (fileName: string) => {
 };
 
 
-export const fetchMetrics = async (fileName: string) => {
-  const response = await fetch(DOMAIN + `/pattern/` + fileName);
+export const fetchMetrics = async (id: number) => {
+  const response = await fetch(DOMAIN + `/pattern/` + id);
   if (!response.ok) {
     throw new Error('Failed to fetch emotion analysis data');
   }
   return response.json();
 };
 
-export const fetchTopic = async (fileName: string) => {
-  const response = await fetch(DOMAIN + `/topic/` + fileName);
+export const fetchTopic = async (id: number) => {
+  const response = await fetch(DOMAIN + `/topic/` + id);
   //const response = await fetch(DOMAIN + `/topic/`);
   if (!response.ok) {
     throw new Error('Failed to fetch emotion analysis data');
@@ -30,8 +30,8 @@ export const fetchTopic = async (fileName: string) => {
 };
 
 export const fetchLLM = async (id: number) => {
-  const response = await fetch(DOMAIN + `/analyze-mbti/` + id);
-  //const response = await fetch(DOMAIN + `/llm/sample`);
+  //const response = await fetch(DOMAIN + `/analyze-mbti/` + id);
+  const response = await fetch(DOMAIN + `/llm/sample`);
   if (!response.ok) {
     throw new Error('Failed to fetch emotion analysis data');
   }
