@@ -205,7 +205,7 @@ const getCompatibilityComment = (my: string, partner: string): string => {
                       style={getGradientStyle(40, partner.name)}
                       >
                       <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
-                      <div className="relative p-6 text-center text-2xl font-bold">{partner.mbti}</div>
+                      <div className="relative p-6 text-center text-2xl font-bold">{partner.mbti ? partner.mbti : '선택 안 함'}</div>
                     </div>
                   </div>
                 </div>
@@ -230,9 +230,11 @@ const getCompatibilityComment = (my: string, partner: string): string => {
                 <div className="text-4xl font-bold text-indigo-500 mb-1">
                   {predict.type}
                 </div>
-                <div className={`text-sm font-medium ${partner.mbti === predict.type ? 'text-emerald-700' : 'text-red-500'}`}>
-                  {partner.mbti === predict.type ? '✓ 입력값과 일치' : '⚠️ 입력한 MBTI와 차이가 있어요'}
-                </div>
+                {partner.mbti && (
+                  <div className={`text-sm font-medium ${partner.mbti === predict.type ? 'text-emerald-700' : 'text-red-500'}`}>
+                    {partner.mbti === predict.type ? '✓ 입력값과 일치' : '⚠️ 입력한 MBTI와 차이가 있어요'}
+                  </div>
+                )}
               </div>
             </div>
           </CardContent>
