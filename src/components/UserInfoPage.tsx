@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,10 @@ interface Props {
 const UserInfoPage: React.FC<Props> = ({ uploadedFile }) => {
     const { state, goToStep, setUserInfo, startAnalysis } = useApp();
     const [selected, setSelected] = useState(null);
-
+    const myMbtiRef = useRef<HTMLSelectElement>(null);
+    const myGenderRef = useRef<HTMLSelectElement>(null);
+    const partnerMbtiRef = useRef<HTMLSelectElement>(null);
+    const partnerGenderRef = useRef<HTMLSelectElement>(null);
     const [showToast, setShowToast] = useState(false);
 
     // 사용자 정보 상태
@@ -35,6 +38,40 @@ const UserInfoPage: React.FC<Props> = ({ uploadedFile }) => {
     const handleAnalyze = async () => {
         const myName = selected;
         const partnerName = state.predictedSpeakers.find((n) => n !== myName);
+
+        if (!uploadedFile) {
+            alert('파일이 업로드되지 않았습니다.');
+            return;
+        }
+
+        if (!myName || !partnerName) {
+            alert('이름 선택이 필요합니다.');
+            return;
+        }
+
+        if (!myMbti || myMbti === '선택') {
+            alert('나의 MBTI를 선택해주세요.');
+            myMbtiRef.current?.focus();
+            return;
+        }
+
+        if (!myGender || myGender === '선택') {
+            alert('나의 성별을 선택해주세요.');
+            myGenderRef.current?.focus();
+            return;
+        }
+
+        if (!partnerMbti || partnerMbti === '선택') {
+            alert('상대방 MBTI를 선택해주세요.');
+            partnerMbtiRef.current?.focus();
+            return;
+        }
+
+        if (!partnerGender || partnerGender === '선택') {
+            alert('상대방 성별을 선택해주세요.');
+            partnerGenderRef.current?.focus();
+            return;
+        }
 
         if (!uploadedFile || !myName || !partnerName) {
             alert('필수 항목을 모두 입력해주세요.');
