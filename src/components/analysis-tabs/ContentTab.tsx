@@ -7,12 +7,13 @@ import {
     ResponsiveContainer
 } from 'recharts';
 
-// 워드 클라우드
+const pastelColors = ['#8B5CF6', '#10B981', '#F59E0B', '#EF4444'];
+
 const WordCloud = ({ words }: { words: { word: string; count: number }[] }) => {
     const maxCount = Math.max(...words.map(w => w.count));
-    const getFontSize = (count: number) => 12 + (count / maxCount) * 28;
+    const getFontSize = (count: number) => 14 + (count / maxCount) * 24;
     return (
-        <div className="relative h-64 bg-gray-50 rounded p-2 overflow-hidden">
+        <div className="relative h-64 bg-white rounded-xl p-4 border border-gray-100 shadow-md overflow-hidden">
             {words.map((w, i) => (
                 <span
                     key={i}
@@ -21,7 +22,8 @@ const WordCloud = ({ words }: { words: { word: string; count: number }[] }) => {
                         left: `${15 + Math.random() * 70}%`,
                         top: `${15 + Math.random() * 70}%`,
                         fontSize: `${getFontSize(w.count)}px`,
-                        color: ['#8B5CF6', '#10B981', '#F59E0B', '#EF4444'][i % 4],
+                        fontWeight: 500,
+                        color: pastelColors[i % pastelColors.length],
                     }}
                 >
                     {w.word}
@@ -34,7 +36,6 @@ const WordCloud = ({ words }: { words: { word: string; count: number }[] }) => {
 const ContentTab: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'user' | 'partner'>('user');
 
-    // 하드코딩된 mock 데이터
     const data = {
         wordFrequency: {
             user: [
@@ -79,15 +80,17 @@ const ContentTab: React.FC = () => {
     });
 
     return (
-        <div className="p-6">
-            <h2 className="text-2xl font-bold mb-6">대화 내용 분석</h2>
+        <div className="p-8 bg-[#F9FAFB] min-h-screen font-sans">
+            <h2 className="text-2xl font-bold mb-6 text-gray-800">💬 대화 내용 분석</h2>
 
-            {/* 워드클라우드 */}
-            <Card className="mb-6">
-                <CardHeader><CardTitle>자주 사용한 단어</CardTitle></CardHeader>
+            {/* 자주 사용한 단어 */}
+            <Card className="mb-8 bg-white shadow-md rounded-2xl border border-gray-100">
+                <CardHeader>
+                    <CardTitle className="text-lg font-semibold text-gray-800">✨ 자주 사용한 단어</CardTitle>
+                </CardHeader>
                 <CardContent>
                     <Tabs defaultValue="user" onValueChange={(val) => setActiveTab(val as 'user' | 'partner')}>
-                        <TabsList className="mb-4">
+                        <TabsList className="mb-4 bg-gray-100 p-1 rounded-lg">
                             <TabsTrigger value="user">{user.name}</TabsTrigger>
                             <TabsTrigger value="partner">{partner.name}</TabsTrigger>
                         </TabsList>
@@ -97,12 +100,12 @@ const ContentTab: React.FC = () => {
                     <div className="mt-4 text-sm text-gray-600">
                         {activeTab === 'user' ? (
                             <>
-                                <b>{user.name}</b>님은{' '}
+                                <b className="text-purple-600">{user.name}</b>님은{' '}
                                 <b>{data.wordFrequency.user.slice(0, 3).map(w => w.word).join(', ')}</b> 등의 단어를 자주 사용합니다.
                             </>
                         ) : (
                             <>
-                                <b>{partner.name}</b>님은{' '}
+                                <b className="text-green-600">{partner.name}</b>님은{' '}
                                 <b>{data.wordFrequency.partner.slice(0, 3).map(w => w.word).join(', ')}</b> 등의 단어를 자주 사용합니다.
                             </>
                         )}
@@ -110,14 +113,19 @@ const ContentTab: React.FC = () => {
                 </CardContent>
             </Card>
 
-            {/* 대화 주제 시각화 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <Card>
-                    <CardHeader><CardTitle>주요 대화 주제</CardTitle></CardHeader>
+            {/* 주제 분석 및 변화 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <Card className="bg-white shadow-md rounded-2xl border border-gray-100">
+                    <CardHeader><CardTitle className="text-lg text-gray-800">🧩 주요 대화 주제</CardTitle></CardHeader>
                     <CardContent>
                         <ResponsiveContainer width="100%" height={250}>
                             <PieChart>
-                                <Pie data={data.topics} dataKey="percentage" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} outerRadius={80}>
+                                <Pie
+                                    data={data.topics}
+                                    dataKey="percentage"
+                                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                                    outerRadius={80}
+                                >
                                     {data.topics.map((entry, idx) => (
                                         <Cell key={`cell-${idx}`} fill={entry.color} />
                                     ))}
@@ -126,13 +134,13 @@ const ContentTab: React.FC = () => {
                             </PieChart>
                         </ResponsiveContainer>
                         <div className="text-sm text-gray-600 mt-2">
-                            가장 많이 언급된 주제는 <b style={{ color: data.topics[0].color }}>{data.topics[0].name}</b>입니다.
+                            가장 많이 언급된 주제는 <b className="text-blue-600">{data.topics[0].name}</b>입니다.
                         </div>
                     </CardContent>
                 </Card>
 
-                <Card>
-                    <CardHeader><CardTitle>시간에 따른 주제 변화</CardTitle></CardHeader>
+                <Card className="bg-white shadow-md rounded-2xl border border-gray-100">
+                    <CardHeader><CardTitle className="text-lg text-gray-800">📈 시간에 따른 주제 변화</CardTitle></CardHeader>
                     <CardContent>
                         <ResponsiveContainer width="100%" height={250}>
                             <LineChart data={topicTimelineData}>
@@ -142,7 +150,14 @@ const ContentTab: React.FC = () => {
                                 <Tooltip />
                                 <Legend />
                                 {Object.keys(data.topicTimeline.topics).map((topic) => (
-                                    <Line key={topic} type="monotone" dataKey={topic} stroke={data.topics.find(t => t.name === topic)?.color || "#8884d8"} />
+                                    <Line
+                                        key={topic}
+                                        type="monotone"
+                                        dataKey={topic}
+                                        stroke={data.topics.find(t => t.name === topic)?.color || "#8884d8"}
+                                        strokeWidth={2}
+                                        dot={{ r: 3 }}
+                                    />
                                 ))}
                             </LineChart>
                         </ResponsiveContainer>
@@ -151,14 +166,14 @@ const ContentTab: React.FC = () => {
             </div>
 
             {/* 총평 */}
-            <Card>
-                <CardHeader><CardTitle>대화 내용 총평</CardTitle></CardHeader>
+            <Card className="bg-white shadow-md rounded-2xl border border-gray-100">
+                <CardHeader><CardTitle className="text-lg text-gray-800">📝 대화 내용 총평</CardTitle></CardHeader>
                 <CardContent>
-                    <div className="text-sm text-gray-700">
+                    <div className="text-sm text-gray-700 leading-relaxed">
                         두 사람의 대화는 <b>{data.topics.map(t => t.name).join(', ')}</b> 주제를 중심으로 이루어집니다.
                         <br />
-                        {user.name}님은 <b>{data.wordFrequency.user[0].word}</b>,
-                        {partner.name}님은 <b>{data.wordFrequency.partner[0].word}</b>를 가장 자주 사용합니다.
+                        <b className="text-purple-600">{user.name}</b>님은 <b>{data.wordFrequency.user[0].word}</b>,
+                        <b className="text-green-600">{partner.name}</b>님은 <b>{data.wordFrequency.partner[0].word}</b>를 가장 자주 사용합니다.
                     </div>
                 </CardContent>
             </Card>
