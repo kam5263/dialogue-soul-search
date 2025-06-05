@@ -18,6 +18,7 @@ const WordCloud = ({ words }: { words: { word: string; count: number }[] }) => {
             {words.map((w, i) => (
                 <span
                     key={i}
+                    className="inline-block animate-fade-in-word"
                     style={{
                         position: 'absolute',
                         left: `${15 + Math.random() * 70}%`,
@@ -25,6 +26,9 @@ const WordCloud = ({ words }: { words: { word: string; count: number }[] }) => {
                         fontSize: `${getFontSize(w.count)}px`,
                         fontWeight: 500,
                         color: pastelColors[i % pastelColors.length],
+                        border: '1px solid #ddd',
+                        borderRadius: '6px',
+                        padding: '2px 4px'
                     }}
                 >
                     {w.word}
@@ -161,7 +165,7 @@ const ContentTab: React.FC = () => {
                                             padding: '2px 12px',
                                             borderRadius: '9999px',
                                             backgroundColor: colors[value] || '#F3F4F6',
-                                            color: '#1F2937',
+                                            color: 'white',
                                             fontSize: '12px',
                                             fontWeight: 'bold'
                                         }}>
