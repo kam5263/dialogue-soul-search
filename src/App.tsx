@@ -26,7 +26,7 @@ const App = () => {
               <Route path="/" element={<Index />} />
                           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                           {/* 테스트용 경로 추가 */}
-                          <Route path="/test-content" element={<TestContentPage />} />
+                          {/*<Route path="/test-content" element={<TestContentPage />} />*/}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

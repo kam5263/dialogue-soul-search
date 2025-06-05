@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import WordCloudHeart from '../ui/WordCloudHeart';
+import { CardTitle } from '@/components/ui/card';
 import {
     PieChart, Pie, Cell,
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
     ResponsiveContainer
 } from 'recharts';
+import '@/ContentTab.css';
 
-const pastelColors = ['#8B5CF6', '#10B981', '#F59E0B', '#EF4444'];
+const pastelColors = ['#C4B5FD', '#6EE7B7', '#FCD34D', '#FCA5A5'];
 
 const WordCloud = ({ words }: { words: { word: string; count: number }[] }) => {
     const maxCount = Math.max(...words.map(w => w.count));
     const getFontSize = (count: number) => 14 + (count / maxCount) * 24;
     return (
-        <div className="relative h-64 bg-white rounded-xl p-4 border border-gray-100 shadow-md overflow-hidden">
+        <div className="relative h-64 bg-white rounded-xl p-4 border border-gray-200 shadow-md overflow-hidden">
             {words.map((w, i) => (
                 <span
                     key={i}
@@ -29,9 +30,25 @@ const WordCloud = ({ words }: { words: { word: string; count: number }[] }) => {
                     {w.word}
                 </span>
             ))}
+            {[...Array(4)].map((_, i) => (
+                <div
+                    key={i}
+                    className="absolute w-2 h-2 rounded-full bg-red-200 opacity-70 animate-pulse-soft"
+                    style={{
+                        left: `${10 + Math.random() * 80}%`,
+                        top: `${10 + Math.random() * 80}%`,
+                    }}
+                ></div>
+            ))}
         </div>
     );
 };
+
+const GradientCard = ({ children, animateOnHover = false }: { children: React.ReactNode; animateOnHover?: boolean }) => (
+    <div className={`rounded-2xl border border-gray-200 p-[1px] bg-white shadow-md transition-transform ${animateOnHover ? 'hover:scale-[1.015]' : ''}`}>
+        <div className="bg-white rounded-[inherit] p-5">{children}</div>
+    </div>
+);
 
 const ContentTab: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'user' | 'partner'>('user');
@@ -54,9 +71,9 @@ const ContentTab: React.FC = () => {
             ]
         },
         topics: [
-            { name: '일상', percentage: 0.4, color: '#3B82F6' },
-            { name: '감정', percentage: 0.3, color: '#EF4444' },
-            { name: '취미', percentage: 0.3, color: '#6366F1' }
+            { name: '일상', percentage: 0.4, color: '#60A5FA' },
+            { name: '감정', percentage: 0.3, color: '#FCA5A5' },
+            { name: '취미', percentage: 0.3, color: '#8B5CF6' }
         ],
         topicTimeline: {
             timestamps: ['월', '화', '수', '목', '금', '토', '일'],
@@ -80,103 +97,114 @@ const ContentTab: React.FC = () => {
     });
 
     return (
-        <div className="p-8 bg-[#F9FAFB] min-h-screen font-sans">
-            <h2 className="text-2xl font-bold mb-6 text-gray-800">💬 대화 내용 분석</h2>
+        <div className="p-8 bg-white min-h-screen font-sans">
+            <h2 className="text-2xl font-bold mb-6 text-black">💬 대화 내용 분석</h2>
 
-            {/* 자주 사용한 단어 */}
-            <Card className="mb-8 bg-white shadow-md rounded-2xl border border-gray-100">
-                <CardHeader>
-                    <CardTitle className="text-lg font-semibold text-gray-800">✨ 자주 사용한 단어</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <Tabs defaultValue="user" onValueChange={(val) => setActiveTab(val as 'user' | 'partner')}>
-                        <TabsList className="mb-4 bg-gray-100 p-1 rounded-lg">
-                            <TabsTrigger value="user">{user.name}</TabsTrigger>
-                            <TabsTrigger value="partner">{partner.name}</TabsTrigger>
-                        </TabsList>
-                        <TabsContent value="user"><WordCloud words={data.wordFrequency.user} /></TabsContent>
-                        <TabsContent value="partner"><WordCloud words={data.wordFrequency.partner} /></TabsContent>
-                    </Tabs>
-                    <div className="mt-4 text-sm text-gray-600">
-                        {activeTab === 'user' ? (
-                            <>
-                                <b className="text-purple-600">{user.name}</b>님은{' '}
-                                <b>{data.wordFrequency.user.slice(0, 3).map(w => w.word).join(', ')}</b> 등의 단어를 자주 사용합니다.
-                            </>
-                        ) : (
-                            <>
-                                <b className="text-green-600">{partner.name}</b>님은{' '}
-                                <b>{data.wordFrequency.partner.slice(0, 3).map(w => w.word).join(', ')}</b> 등의 단어를 자주 사용합니다.
-                            </>
-                        )}
+            <GradientCard>
+                <CardTitle className="text-lg font-semibold text-black flex items-center gap-2 mb-2">
+                    <span>💖</span>자주 사용한 단어
+                </CardTitle>
+                <WordCloudHeart leftWords={data.wordFrequency.user} rightWords={data.wordFrequency.partner} />
+                <div className="flex items-center justify-center gap-4 mt-3">
+                    <div className="flex items-center gap-1 text-sm text-gray-600">
+                        <span className="inline-block w-3 h-3 rounded-full bg-[#C084FC]" /> 영희
                     </div>
-                </CardContent>
-            </Card>
+                    <div className="flex items-center gap-1 text-sm text-gray-600">
+                        <span className="inline-block w-3 h-3 rounded-full bg-[#34D399]" /> 철수
+                    </div>
+                </div>
+            </GradientCard>
 
-            {/* 주제 분석 및 변화 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                <Card className="bg-white shadow-md rounded-2xl border border-gray-100">
-                    <CardHeader><CardTitle className="text-lg text-gray-800">🧩 주요 대화 주제</CardTitle></CardHeader>
-                    <CardContent>
-                        <ResponsiveContainer width="100%" height={250}>
-                            <PieChart>
-                                <Pie
-                                    data={data.topics}
-                                    dataKey="percentage"
-                                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                                    outerRadius={80}
-                                >
-                                    {data.topics.map((entry, idx) => (
-                                        <Cell key={`cell-${idx}`} fill={entry.color} />
-                                    ))}
-                                </Pie>
-                                <Tooltip />
-                            </PieChart>
-                        </ResponsiveContainer>
-                        <div className="text-sm text-gray-600 mt-2">
-                            가장 많이 언급된 주제는 <b className="text-blue-600">{data.topics[0].name}</b>입니다.
-                        </div>
-                    </CardContent>
-                </Card>
-
-                <Card className="bg-white shadow-md rounded-2xl border border-gray-100">
-                    <CardHeader><CardTitle className="text-lg text-gray-800">📈 시간에 따른 주제 변화</CardTitle></CardHeader>
-                    <CardContent>
-                        <ResponsiveContainer width="100%" height={250}>
-                            <LineChart data={topicTimelineData}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" />
-                                <YAxis />
-                                <Tooltip />
-                                <Legend />
-                                {Object.keys(data.topicTimeline.topics).map((topic) => (
-                                    <Line
-                                        key={topic}
-                                        type="monotone"
-                                        dataKey={topic}
-                                        stroke={data.topics.find(t => t.name === topic)?.color || "#8884d8"}
-                                        strokeWidth={2}
-                                        dot={{ r: 3 }}
-                                    />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-8">
+                <GradientCard animateOnHover>
+                    <CardTitle className="text-lg text-black mb-2">🧩 주요 대화 주제</CardTitle>
+                    <ResponsiveContainer width="100%" height={250}>
+                        <PieChart>
+                            <Pie
+                                className="transition-transform hover:scale-[1.03]"
+                                data={data.topics}
+                                dataKey="percentage"
+                                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                                outerRadius={80}
+                            >
+                                {data.topics.map((entry, idx) => (
+                                    <Cell key={`cell-${idx}`} fill={entry.color} />
                                 ))}
-                            </LineChart>
-                        </ResponsiveContainer>
-                    </CardContent>
-                </Card>
+                            </Pie>
+                            <Tooltip />
+                        </PieChart>
+                    </ResponsiveContainer>
+                    <div className="text-sm text-blue-900 mt-3 bg-blue-50 border border-blue-200 rounded-lg p-3">
+                        가장 많이 언급된 주제는 <b className="text-blue-600">{data.topics[0].name}</b>입니다.
+                    </div>
+                </GradientCard>
+
+                <GradientCard>
+                    <CardTitle className="text-lg text-black mb-2">📈 시간에 따른 주제 변화</CardTitle>
+                    <ResponsiveContainer width="100%" height={280}>
+                        <LineChart data={topicTimelineData} margin={{ top: 10, right: 20, bottom: 0, left: 0 }}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                            <XAxis dataKey="name" tick={{ fill: '#4B5563' }} />
+                            <YAxis tick={{ fill: '#4B5563' }} />
+                            <Tooltip />
+                            <Legend formatter={(value) => {
+                                const colors: Record<string, string> = {
+                                    일상: '#60A5FA',
+                                    감정: '#FCA5A5',
+                                    취미: '#8B5CF6',
+                                };
+                                return (
+                                    <span
+                                        className="transition-transform hover:scale-[1.1]"
+                                        style={{
+                                            display: 'inline-block',
+                                            padding: '2px 12px',
+                                            borderRadius: '9999px',
+                                            backgroundColor: colors[value] || '#F3F4F6',
+                                            color: '#1F2937',
+                                            fontSize: '12px',
+                                            fontWeight: 'bold'
+                                        }}>
+                                        {value}
+                                    </span>
+                                );
+                            }} />
+                            {Object.keys(data.topicTimeline.topics).map((topic) => (
+                                <Line
+                                    key={topic}
+                                    type="monotone"
+                                    dataKey={topic}
+                                    stroke={data.topics.find(t => t.name === topic)?.color || "#8884d8"}
+                                    strokeWidth={3}
+                                    dot={{ r: 4 }}
+                                />
+                            ))}
+                        </LineChart>
+                    </ResponsiveContainer>
+                </GradientCard>
             </div>
 
-            {/* 총평 */}
-            <Card className="bg-white shadow-md rounded-2xl border border-gray-100">
-                <CardHeader><CardTitle className="text-lg text-gray-800">📝 대화 내용 총평</CardTitle></CardHeader>
-                <CardContent>
-                    <div className="text-sm text-gray-700 leading-relaxed">
-                        두 사람의 대화는 <b>{data.topics.map(t => t.name).join(', ')}</b> 주제를 중심으로 이루어집니다.
-                        <br />
-                        <b className="text-purple-600">{user.name}</b>님은 <b>{data.wordFrequency.user[0].word}</b>,
-                        <b className="text-green-600">{partner.name}</b>님은 <b>{data.wordFrequency.partner[0].word}</b>를 가장 자주 사용합니다.
+            <GradientCard animateOnHover>
+                <CardTitle className="text-lg text-black mb-2">📝 대화 내용 총평</CardTitle>
+                <div className="text-sm text-gray-700 leading-relaxed space-y-3">
+                    <div className="bg-[#F5F5F5] text-[#4B5563] px-4 py-3 rounded-xl shadow-sm transition-transform hover:scale-[1.01]">
+                        💬 두 사람의 대화는
+                        <span className="font-semibold mx-1 text-[#60A5FA]">일상</span>,
+                        <span className="font-semibold mx-1 text-[#FCA5A5]">감정</span>,
+                        <span className="font-semibold mx-1 text-[#8B5CF6]">취미</span> 중심으로 이루어졌어요.
                     </div>
-                </CardContent>
-            </Card>
+                    <div className="flex flex-col md:flex-row gap-3">
+                        <div className="flex-1 bg-[#F3ECFF] text-[#6B21A8] px-4 py-3 rounded-xl shadow-sm transition-transform hover:scale-[1.01]">
+                            <span className="font-semibold">{user.name}</span> 님은
+                            <span className="font-semibold mx-1">"{data.wordFrequency.user[0].word}"</span>라는 단어를 가장 자주 사용했어요.
+                        </div>
+                        <div className="flex-1 bg-[#E1F8F4] text-[#047857] px-4 py-3 rounded-xl shadow-sm transition-transform hover:scale-[1.01]">
+                            <span className="font-semibold">{partner.name}</span> 님은
+                            <span className="font-semibold mx-1">"{data.wordFrequency.partner[0].word}"</span>라는 단어를 가장 자주 사용했어요.
+                        </div>
+                    </div>
+                </div>
+            </GradientCard>
         </div>
     );
 };
