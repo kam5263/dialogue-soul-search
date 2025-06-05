@@ -139,7 +139,7 @@ const UserInfoPage: React.FC<Props> = ({ uploadedFile }) => {
                             />
                             <div className="flex gap-4">
                                 <div className="flex-1">
-                                    <label className="block text-xs font-semibold mb-1">MBTI (선택)</label>
+                                    <label className="block text-xs font-semibold mb-1">MBTI (필수)</label>
                                     <select value={myMbti} onChange={(e) => setMyMbti(e.target.value)} className="w-full px-3 py-2 rounded border text-sm bg-white text-black">
                                         <option>선택</option>
                                         {/* MBTI 목록 */}
@@ -149,7 +149,7 @@ const UserInfoPage: React.FC<Props> = ({ uploadedFile }) => {
                                     </select>
                                 </div>
                                 <div className="flex-1">
-                                    <label className="block text-xs font-semibold mb-1">성별 (선택)</label>
+                                    <label className="block text-xs font-semibold mb-1">성별 (필수)</label>
                                     <select value={myGender} onChange={(e) => setMyGender(e.target.value)} className="w-full px-3 py-2 rounded border text-sm bg-white text-black">
                                         <option>선택</option>
                                         <option>남성</option>
@@ -171,7 +171,7 @@ const UserInfoPage: React.FC<Props> = ({ uploadedFile }) => {
                             />
                             <div className="flex gap-4">
                                 <div className="flex-1">
-                                    <label className="block text-xs font-semibold mb-1">MBTI (선택)</label>
+                                    <label className="block text-xs font-semibold mb-1">MBTI (필수)</label>
                                     <select value={partnerMbti} onChange={(e) => setPartnerMbti(e.target.value)} className="w-full px-3 py-2 rounded border text-sm bg-white text-black">
                                         <option>선택</option>
                                         {['모름', 'INTJ', 'INTP', 'ENTJ', 'ENTP', 'INFJ', 'INFP', 'ENFJ', 'ENFP', 'ISTJ', 'ISFJ', 'ESTJ', 'ESFJ', 'ISTP', 'ISFP', 'ESTP', 'ESFP'].map(m => (
@@ -180,7 +180,7 @@ const UserInfoPage: React.FC<Props> = ({ uploadedFile }) => {
                                     </select>
                                 </div>
                                 <div className="flex-1">
-                                    <label className="block text-xs font-semibold mb-1">성별 (선택)</label>
+                                    <label className="block text-xs font-semibold mb-1">성별 (필수)</label>
                                     <select value={partnerGender} onChange={(e) => setPartnerGender(e.target.value)} className="w-full px-3 py-2 rounded border text-sm bg-white text-black">
                                         <option>선택</option>
                                         <option>남성</option>
