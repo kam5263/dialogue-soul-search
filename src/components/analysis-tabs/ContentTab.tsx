@@ -6,6 +6,7 @@ import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
     ResponsiveContainer
 } from 'recharts';
+import { useApp } from '@/contexts/AppContext';
 import '@/ContentTab.css';
 
 const pastelColors = ['#C4B5FD', '#6EE7B7', '#FCD34D', '#FCA5A5'];
@@ -54,6 +55,7 @@ interface ContentTabProps {
 }
 
 const ContentTab: React.FC<ContentTabProps> = ({ userInfo, analysisData }) => {
+    const { state } = useApp(); // 🔸 Context에서 userInfo와 analysisData 가져옴
     const [activeTab, setActiveTab] = useState<'user' | 'partner'>('user');
 
     const data = {
@@ -87,8 +89,8 @@ const ContentTab: React.FC<ContentTabProps> = ({ userInfo, analysisData }) => {
             }
         }
     };
-    const user = userInfo.user;
-    const partner = userInfo.partner;
+    const user = state.userInfo.user;
+    const partner = state.userInfo.partner;
 
     const topicTimelineData = data.topicTimeline.timestamps.map((timestamp, i) => {
         const point: any = { name: timestamp };
