@@ -34,16 +34,6 @@ const WordCloud = ({ words }: { words: { word: string; count: number }[] }) => {
                     {w.word}
                 </span>
             ))}
-            {[...Array(4)].map((_, i) => (
-                <div
-                    key={i}
-                    className="absolute w-2 h-2 rounded-full bg-red-200 opacity-70 animate-pulse-soft"
-                    style={{
-                        left: `${10 + Math.random() * 80}%`,
-                        top: `${10 + Math.random() * 80}%`,
-                    }}
-                ></div>
-            ))}
         </div>
     );
 };
@@ -54,24 +44,33 @@ const GradientCard = ({ children, animateOnHover = false }: { children: React.Re
     </div>
 );
 
-const ContentTab: React.FC = () => {
+interface ContentTabProps {
+    userInfo: { user: { name: string }, partner: { name: string } };
+    analysisData: {
+        wordFrequency: { user: { word: string, count: number }[], partner: { word: string, count: number }[] },
+        topics: { name: string, percentage: number, color: string }[],
+        topicTimeline: { timestamps: string[], topics: Record<string, number[]> }
+    };
+}
+
+const ContentTab: React.FC<ContentTabProps> = ({ userInfo, analysisData }) => {
     const [activeTab, setActiveTab] = useState<'user' | 'partner'>('user');
 
     const data = {
         wordFrequency: {
             user: [
-                { word: '오늘', count: 34 },
-                { word: '진짜', count: 30 },
-                { word: '테스트', count: 21 },
-                { word: '사진', count: 21 },
-                { word: '언니', count: 18 }
+                { word: '오늘', count: 19 },
+                { word: '진짜', count: 19 },
+                { word: '시간', count: 18 },
+                { word: '출근', count: 13 },
+                { word: '퇴근', count: 12 }
             ],
             partner: [
-                { word: '하나', count: 16 },
-                { word: '사람', count: 16 },
-                { word: '이모티콘', count: 15 },
-                { word: '우리', count: 14 },
-                { word: '수업', count: 12 }
+                { word: '바다', count: 16 },
+                { word: '이제', count: 16 },
+                { word: '고생', count: 15 },
+                { word: '사람', count: 14 },
+                { word: '주말', count: 12 }
             ]
         },
         topics: [
@@ -88,9 +87,8 @@ const ContentTab: React.FC = () => {
             }
         }
     };
-
-    const user = { name: '영희', mbti: 'INFP', gender: '여' };
-    const partner = { name: '철수', mbti: 'ENTJ', gender: '남' };
+    const user = userInfo.user;
+    const partner = userInfo.partner;
 
     const topicTimelineData = data.topicTimeline.timestamps.map((timestamp, i) => {
         const point: any = { name: timestamp };
@@ -111,10 +109,10 @@ const ContentTab: React.FC = () => {
                 <WordCloudHeart leftWords={data.wordFrequency.user} rightWords={data.wordFrequency.partner} />
                 <div className="flex items-center justify-center gap-4 mt-3">
                     <div className="flex items-center gap-1 text-sm text-gray-600">
-                        <span className="inline-block w-3 h-3 rounded-full bg-[#C084FC]" /> 영희
+                        <span className="inline-block w-3 h-3 rounded-full bg-[#C084FC]" /> {user.name}
                     </div>
                     <div className="flex items-center gap-1 text-sm text-gray-600">
-                        <span className="inline-block w-3 h-3 rounded-full bg-[#34D399]" /> 철수
+                        <span className="inline-block w-3 h-3 rounded-full bg-[#34D399]" /> {partner.name}
                     </div>
                 </div>
             </GradientCard>
@@ -125,7 +123,6 @@ const ContentTab: React.FC = () => {
                     <ResponsiveContainer width="100%" height={250}>
                         <PieChart>
                             <Pie
-                                className="transition-transform hover:scale-[1.03]"
                                 data={data.topics}
                                 dataKey="percentage"
                                 label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
@@ -146,7 +143,7 @@ const ContentTab: React.FC = () => {
                 <GradientCard>
                     <CardTitle className="text-lg text-black mb-2">📈 시간에 따른 주제 변화</CardTitle>
                     <ResponsiveContainer width="100%" height={280}>
-                        <LineChart data={topicTimelineData} margin={{ top: 10, right: 20, bottom: 0, left: 0 }}>
+                        <LineChart data={topicTimelineData}>
                             <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
                             <XAxis dataKey="name" tick={{ fill: '#4B5563' }} />
                             <YAxis tick={{ fill: '#4B5563' }} />
@@ -191,18 +188,18 @@ const ContentTab: React.FC = () => {
             <GradientCard animateOnHover>
                 <CardTitle className="text-lg text-black mb-2">📝 대화 내용 총평</CardTitle>
                 <div className="text-sm text-gray-700 leading-relaxed space-y-3">
-                    <div className="bg-[#F5F5F5] text-[#4B5563] px-4 py-3 rounded-xl shadow-sm transition-transform hover:scale-[1.01]">
+                    <div className="bg-[#F5F5F5] text-[#4B5563] px-4 py-3 rounded-xl shadow-sm">
                         💬 두 사람의 대화는
                         <span className="font-semibold mx-1 text-[#60A5FA]">일상</span>,
                         <span className="font-semibold mx-1 text-[#FCA5A5]">감정</span>,
                         <span className="font-semibold mx-1 text-[#8B5CF6]">취미</span> 중심으로 이루어졌어요.
                     </div>
                     <div className="flex flex-col md:flex-row gap-3">
-                        <div className="flex-1 bg-[#F3ECFF] text-[#6B21A8] px-4 py-3 rounded-xl shadow-sm transition-transform hover:scale-[1.01]">
+                        <div className="flex-1 bg-[#F3ECFF] text-[#6B21A8] px-4 py-3 rounded-xl shadow-sm">
                             <span className="font-semibold">{user.name}</span> 님은
                             <span className="font-semibold mx-1">"{data.wordFrequency.user[0].word}"</span>라는 단어를 가장 자주 사용했어요.
                         </div>
-                        <div className="flex-1 bg-[#E1F8F4] text-[#047857] px-4 py-3 rounded-xl shadow-sm transition-transform hover:scale-[1.01]">
+                        <div className="flex-1 bg-[#E1F8F4] text-[#047857] px-4 py-3 rounded-xl shadow-sm">
                             <span className="font-semibold">{partner.name}</span> 님은
                             <span className="font-semibold mx-1">"{data.wordFrequency.partner[0].word}"</span>라는 단어를 가장 자주 사용했어요.
                         </div>
